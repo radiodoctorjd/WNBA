@@ -60,7 +60,7 @@
   .retry-btn:hover { background: var(--orange-dim); }
 
   /* GAME CARDS */
-  .games-grid { display: flex; flex-direction: column; gap: 24px; }
+  .games-grid { display: flex; flex-direction: column; gap: 40px; }
   .game-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
   .game-card-header { background: var(--surface2); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
   .game-time { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-dim); }
@@ -230,8 +230,8 @@ function renderGame(g, idx) {
   return `
 <div class="game-card animate-in" style="animation-delay:${idx * 0.08}s">
   <div class="game-card-header">
-    <span class="game-time">🕐 ${g.time}</span>
-    <span class="game-conf-badge">ELO PREDICTION</span>
+    <span class="game-time">🏀 GAME ${idx + 1}</span>
+    <span class="game-conf-badge">${g.time}</span>
   </div>
   <div class="matchup">
     <div class="team-block">
@@ -283,7 +283,7 @@ function renderGame(g, idx) {
     </div>
   </div>
   <div class="h1-section">
-    <div class="h1-section-title">1st Half Predictions — Independent H1 ELO Model</div>
+    <div class="h1-section-title">1st Half Predictions</div>
     <div class="h1-grid">
       <div class="h1-cell">
         <div class="pred-label">1H Winner</div>
