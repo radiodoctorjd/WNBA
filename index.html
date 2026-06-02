@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WNBA ELO Prediction Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@300;400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070d;
+    --surface: #0e1117;
+    --surface2: #151820;
+    --surface3: #1c2030;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(255,255,255,0.12);
+    --orange: #ff6b35;
+    --orange-dim: rgba(255,107,53,0.15);
+    --orange-glow: rgba(255,107,53,0.08);
+    --teal: #00d4aa;
+    --teal-dim: rgba(0,212,170,0.12);
+    --yellow: #ffd166;
+    --yellow-dim: rgba(255,209,102,0.12);
+    --red: #ef476f;
+    --red-dim: rgba(239,71,111,0.12);
+    --text: #e8eaf0;
+    --text-dim: #6b7280;
+    --text-mid: #9ca3af;
+    --win: #00d4aa;
+    --loss: #6b7280;
+    --high: #00d4aa;
+    --med: #ffd166;
+    --low: #ef476f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-ball {
+    width: 28px;
+    height: 28px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .logo span { color: var(--orange); }
+
+  .header-meta {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── NAV TABS ── */
+  .tab-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0;
+    padding: 0 2rem;
+  }
+
+  .tab {
+    padding: 14px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .tab.active {
+    color: var(--orange);
+    border-bottom-color: var(--orange);
+  }
+
+  .tab:hover:not(.active) { color: var(--text); }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 2rem;
+  }
+
+  /* ── GAME CARDS ── */
+  .games-grid { display: flex; flex-direction: column; gap: 24px; }
+
+  .game-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .game-card-header {
+    background: var(--surface2);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .game-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .game-conf-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--orange-dim);
+    color: var(--orange);
+    border: 1px solid rgba(255,107,53,0.2);
+  }
+
+  .matchup {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .team-block { display: flex; flex-direction: column; gap: 4px; }
+  .team-block.home { text-align: right; }
+
+  .team-abbr {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+
+  .team-name {
+    font-size: 12px;
+    color: var(--text-mid);
+    font-weight: 400;
+  }
+
+  .team-elo {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .team-win-pct {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .team-win-pct.fav { color: var(--teal); }
+  .team-win-pct.dog { color: var(--text-dim); }
+
+  .vs-block {
+    text-align: center;
+    padding: 0 12px;
+  }
+
+  .vs-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .winner-badge {
+    margin-top: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: var(--teal-dim);
+    color: var(--teal);
+    border: 1px solid rgba(0,212,170,0.2);
+  }
+
+  /* ── PREDICTIONS GRID ── */
+  .pred-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 800px) {
+    .pred-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .pred-cell {
+    padding: 16px 20px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pred-cell:last-child,
+  .pred-cell:nth-child(4n) { border-right: none; }
+
+  .pred-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .pred-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .pred-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ── HALF-TIME SECTION ── */
+  .h1-section {
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    padding: 0;
+  }
+
+  .h1-section-title {
+    padding: 10px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .h1-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+
+  @media (max-width: 800px) {
+    .h1-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .h1-cell {
+    padding: 12px 20px;
+    border-right: 1px solid var(--border);
+  }
+
+  .h1-cell:last-child { border-right: none; }
+
+  /* ── CONFIDENCE BADGE ── */
+  .conf-badge {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .conf-HIGH { background: rgba(0,212,170,0.15); color: var(--teal); border: 1px solid rgba(0,212,170,0.25); }
+  .conf-MED  { background: rgba(255,209,102,0.15); color: var(--yellow); border: 1px solid rgba(255,209,102,0.25); }
+  .conf-LOW  { background: rgba(239,71,111,0.15); color: var(--red); border: 1px solid rgba(239,71,111,0.25); }
+
+  /* ── PROBABILITY BAR ── */
+  .prob-bar-wrap {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .prob-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--surface3);
+    border-radius: 3px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .prob-fill-away { background: var(--text-dim); height: 100%; transition: width 0.6s ease; }
+  .prob-fill-home { background: var(--orange); height: 100%; transition: width 0.6s ease; }
+
+  .prob-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ── ELO TABLE ── */
+  .elo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .elo-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border2);
+    background: var(--surface2);
+    font-weight: 400;
+  }
+
+  .elo-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .elo-table tr:last-child td { border-bottom: none; }
+  .elo-table tr:hover td { background: var(--surface2); }
+
+  .rank-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .team-name-cell {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .abbr-cell {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    color: var(--text-mid);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+
+  .elo-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .elo-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 46px;
+    text-align: right;
+  }
+
+  .elo-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: var(--surface3);
+    border-radius: 2px;
+    max-width: 160px;
+  }
+
+  .elo-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  .elo-elite { color: var(--teal); }
+  .elo-above { color: var(--yellow); }
+  .elo-below { color: var(--red); }
+  .elo-bar-elite { background: var(--teal); }
+  .elo-bar-above { background: var(--yellow); }
+  .elo-bar-below { background: var(--red); }
+
+  .conf-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .conf-East { background: rgba(255,107,53,0.12); color: var(--orange); }
+  .conf-West { background: rgba(0,212,170,0.12); color: var(--teal); }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .stat-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .stat-card-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .stat-card-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ── TABLE WRAPPER ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* ── CHART AREA ── */
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .chart-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.03em;
+    margin-bottom: 16px;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 12px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 4rem;
+    padding: 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── TEAM DOT ── */
+  .team-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    background: var(--orange);
+  }
+
+  .animate-in {
+    animation: fadeUp 0.4s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .day-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 0 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .day-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">
+    <div class="logo-ball">🏀</div>
+    WNBA <span>ELO</span> PREDICTOR
+  </div>
+  <div class="header-meta" id="last-updated">Generated: Jun 2, 2026</div>
+</header>
+
+<nav class="tab-bar">
+  <button class="tab active" onclick="switchTab('today')">Today</button>
+  <button class="tab" onclick="switchTab('tomorrow')">Tomorrow</button>
+  <button class="tab" onclick="switchTab('rankings')">ELO Rankings</button>
+</nav>
+
+<main class="main">
+
+  <!-- ═══ TODAY ═══ -->
+  <section class="section active" id="tab-today">
+    <div class="section-title">Today's Games</div>
+    <div class="section-subtitle">Tuesday, June 2, 2026 · ELO-based predictions · 4 games</div>
+    <div class="games-grid" id="today-games"></div>
+  </section>
+
+  <!-- ═══ TOMORROW ═══ -->
+  <section class="section" id="tab-tomorrow">
+    <div class="section-title">Tomorrow's Games</div>
+    <div class="section-subtitle">Wednesday, June 3, 2026 · ELO-based predictions · 2 games</div>
+    <div class="games-grid" id="tomorrow-games"></div>
+  </section>
+
+  <!-- ═══ RANKINGS ═══ -->
+  <section class="section" id="tab-rankings">
+    <div class="section-title">ELO Power Rankings</div>
+    <div class="section-subtitle">2026 Season · Updated through June 1 results</div>
+
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-card-label">Top ELO Team</div>
+        <div class="stat-card-value" style="color: var(--teal);">MIN</div>
+        <div class="stat-card-sub">Minnesota Lynx · 1614</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Avg League ELO</div>
+        <div class="stat-card-value">1500</div>
+        <div class="stat-card-sub">Baseline · calibrated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Lowest ELO</div>
+        <div class="stat-card-value" style="color: var(--red);">CON</div>
+        <div class="stat-card-sub">Connecticut Sun · 1388</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">ELO Spread</div>
+        <div class="stat-card-value">226</div>
+        <div class="stat-card-sub">pts top-to-bottom</div>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">ELO Ratings by Team</div>
+      <div style="position: relative; width: 100%; height: 320px;">
+        <canvas id="eloChart" role="img" aria-label="Bar chart of WNBA team ELO ratings from highest to lowest"></canvas>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="elo-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Team</th>
+            <th>Abbr</th>
+            <th>Conf</th>
+            <th>W-L</th>
+            <th>Win%</th>
+            <th>ELO Rating</th>
+          </tr>
+        </thead>
+        <tbody id="elo-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  WNBA ELO Prediction Model · 2026 Season · K=20 · Home Advantage +50 ELO · MoV Adjusted
+  <br>Not for wagering. Predictions are probabilistic and reflect team strength, not guaranteed outcomes.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ──────────────────────────────────────────────────────────────
+//  DATA — matches Google Apps Script output exactly
+// ──────────────────────────────────────────────────────────────
+const TEAMS_META = {
+  ATL:{name:"Atlanta Dream",         conf:"East"},
+  CHI:{name:"Chicago Sky",           conf:"East"},
+  CON:{name:"Connecticut Sun",        conf:"East"},
+  IND:{name:"Indiana Fever",          conf:"East"},
+  NYL:{name:"New York Liberty",       conf:"East"},
+  TOR:{name:"Toronto Tempo",          conf:"East"},
+  WAS:{name:"Washington Mystics",     conf:"East"},
+  DAL:{name:"Dallas Wings",           conf:"West"},
+  GSV:{name:"Golden State Valkyries", conf:"West"},
+  LAS:{name:"Los Angeles Sparks",     conf:"West"},
+  LVA:{name:"Las Vegas Aces",         conf:"West"},
+  MIN:{name:"Minnesota Lynx",         conf:"West"},
+  PDX:{name:"Portland Fire",          conf:"West"},
+  PHX:{name:"Phoenix Mercury",        conf:"West"},
+  SEA:{name:"Seattle Storm",          conf:"West"},
+};
+
+const WL = {
+  ATL:"5-2", CHI:"3-5", CON:"2-8", IND:"4-4", NYL:"5-4",
+  TOR:"5-4", WAS:"3-4", DAL:"6-3", GSV:"5-3", LAS:"4-4",
+  LVA:"5-3", MIN:"7-2", PDX:"6-4", PHX:"2-8", SEA:"3-7",
+};
+
+const WPCT = {
+  ATL:.714, CHI:.375, CON:.200, IND:.500, NYL:.556,
+  TOR:.556, WAS:.429, DAL:.667, GSV:.625, LAS:.500,
+  LVA:.625, MIN:.778, PDX:.600, PHX:.200, SEA:.300,
+};
+
+// Seed ELO → updated via recent results
+const SEED_ELO = {
+  ATL:1580, CHI:1440, CON:1390, IND:1490,
+  NYL:1530, TOR:1510, WAS:1460,
+  DAL:1560, GSV:1520, LAS:1480, LVA:1530,
+  MIN:1600, PDX:1510, PHX:1400, SEA:1420,
+};
+
+const RECENT = [
+  {home:"SEA",away:"WAS",hS:97,aS:85},
+  {home:"NYL",away:"PDX",hS:74,aS:81},
+  {home:"GSV",away:"CON",hS:97,aS:70},
+  {home:"NYL",away:"PHX",hS:84,aS:74},
+  {home:"CHI",away:"TOR",hS:104,aS:111},
+  {home:"MIN",away:"ATL",hS:96,aS:81},
+  {home:"PDX",away:"CON",hS:71,aS:61},
+  {home:"SEA",away:"WAS",hS:64,aS:78},
+  {home:"DAL",away:"LVA",hS:95,aS:87},
+  {home:"GSV",away:"IND",hS:90,aS:88},
+  {home:"CHI",away:"MIN",hS:58,aS:79},
+  {home:"WAS",away:"LAS",hS:87,aS:92},
+  {home:"NYL",away:"PHX",hS:75,aS:68},
+  {home:"PDX",away:"ATL",hS:66,aS:86},
+  {home:"TOR",away:"SEA",hS:93,aS:72},
+  {home:"CON",away:"LAS",hS:84,aS:81},
+  {home:"PDX",away:"IND",hS:100,aS:84},
+  {home:"GSV",away:"LVA",hS:81,aS:91},
+  {home:"DAL",away:"SEA",hS:79,aS:56},
+  {home:"PHX",away:"MIN",hS:77,aS:111},
+];
+
+const TODAY_GAMES = [
+  {home:"ATL", away:"CON", time:"7:30 PM ET"},
+  {home:"WAS", away:"CHI", time:"7:30 PM ET"},
+  {home:"GSV", away:"PDX", time:"10:00 PM ET"},
+  {home:"LAS", away:"LVA", time:"10:00 PM ET"},
+];
+
+const TMR_GAMES = [
+  {home:"NYL", away:"TOR", time:"7:30 PM ET"},
+  {home:"SEA", away:"PHX", time:"10:00 PM ET"},
+];
+
+// ──────────────────────────────────────────────────────────────
+//  ELO ENGINE
+// ──────────────────────────────────────────────────────────────
+function buildElo() {
+  const elo = {...SEED_ELO};
+  RECENT.forEach(g => {
+    const hEff = elo[g.home] + 50;
+    const aEff = elo[g.away];
+    const exp = 1 / (1 + Math.pow(10, (aEff - hEff) / 400));
+    const act = g.hS > g.aS ? 1 : (g.hS === g.aS ? 0.5 : 0);
+    const diff = Math.abs(g.hS - g.aS);
+    const winnerEloAdv = act === 1 ? hEff - aEff : aEff - hEff;
+    const mov = Math.log(diff + 1) * 2.2 / (winnerEloAdv * 0.001 + 2.2);
+    const k = 20 * mov;
+    elo[g.home] = elo[g.home] + k * (act - exp);
+    elo[g.away] = elo[g.away] + k * ((1 - act) - (1 - exp));
+  });
+  return elo;
+}
+
+function predict(home, away, elo) {
+  const hElo = elo[home], aElo = elo[away];
+  const hEff = hElo + 50;
+  const diff = hEff - aElo;
+  const hWin = 1 / (1 + Math.pow(10, -diff / 400));
+  const aWin = 1 - hWin;
+  const spread = diff * 0.04;
+  const eloAvg = (hElo + aElo - 3000) * 0.015;
+  const fullTotal = 162 + eloAvg;
+  const h1Total   = 79  + eloAvg * 0.5;
+  const hScore    = (fullTotal / 2) + (spread / 2);
+  const aScore    = (fullTotal / 2) - (spread / 2);
+  const hScore1H  = (h1Total   / 2) + (spread / 4);
+  const aScore1H  = (h1Total   / 2) - (spread / 4);
+  const maxProb = Math.max(hWin, aWin);
+  const conf = maxProb >= 0.75 ? "HIGH" : maxProb >= 0.62 ? "MED" : "LOW";
+  const winner = hWin >= 0.5 ? home : away;
+  return {
+    hElo: Math.round(hElo), aElo: Math.round(aElo),
+    hWin: +(hWin * 100).toFixed(1), aWin: +(aWin * 100).toFixed(1),
+    spread: +spread.toFixed(1),
+    fullTotal: +fullTotal.toFixed(1), h1Total: +h1Total.toFixed(1),
+    hScore: +hScore.toFixed(1), aScore: +aScore.toFixed(1),
+    hScore1H: +hScore1H.toFixed(1), aScore1H: +aScore1H.toFixed(1),
+    conf, winner,
+  };
+}
+
+// ──────────────────────────────────────────────────────────────
+//  RENDER GAME CARD
+// ──────────────────────────────────────────────────────────────
+function renderGame(g, p, idx) {
+  const homeMeta = TEAMS_META[g.home];
+  const awayMeta = TEAMS_META[g.away];
+  const hFav = p.hWin >= 50;
+  const hSpreadStr = p.spread > 0 ? `-${p.spread}` : `+${Math.abs(p.spread)}`;
+  const aSpreadStr = p.spread > 0 ? `+${p.spread}` : `-${Math.abs(p.spread)}`;
+  const h1SpreadH  = (p.spread/2) > 0 ? `-${(p.spread/2).toFixed(1)}` : `+${Math.abs(p.spread/2).toFixed(1)}`;
+  const h1SpreadA  = (p.spread/2) > 0 ? `+${(p.spread/2).toFixed(1)}` : `-${Math.abs(p.spread/2).toFixed(1)}`;
+
+  return `
+<div class="game-card animate-in" style="animation-delay:${idx * 0.08}s">
+  <div class="game-card-header">
+    <span class="game-time">🕐 ${g.time}</span>
+    <span class="game-conf-badge">ELO PREDICTION</span>
+  </div>
+
+  <div class="matchup">
+    <div class="team-block">
+      <div class="team-abbr" style="color:${!hFav ? 'var(--orange)' : 'var(--text-mid)'}">${g.away}</div>
+      <div class="team-name">${awayMeta.name}</div>
+      <div class="team-elo">ELO ${p.aElo} · ${WL[g.away]}</div>
+      <div class="team-win-pct ${!hFav ? 'fav' : 'dog'}">${p.aWin}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
+    </div>
+
+    <div class="vs-block">
+      <div class="vs-text">@</div>
+      <div class="winner-badge">${p.winner} wins</div>
+      <div class="conf-badge conf-${p.conf}" style="margin-top:6px;display:block;text-align:center">${p.conf}</div>
+    </div>
+
+    <div class="team-block home">
+      <div class="team-abbr" style="color:${hFav ? 'var(--orange)' : 'var(--text-mid)'}">${g.home}</div>
+      <div class="team-name">${homeMeta.name} <span style="font-size:10px;color:var(--text-dim)">[Home]</span></div>
+      <div class="team-elo">ELO ${p.hElo} · ${WL[g.home]}</div>
+      <div class="team-win-pct ${hFav ? 'fav' : 'dog'}">${p.hWin}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
+    </div>
+  </div>
+
+  <div class="prob-bar-wrap">
+    <span class="prob-label">${g.away} ${p.aWin}%</span>
+    <div class="prob-bar-track">
+      <div class="prob-fill-away" style="width:${p.aWin}%"></div>
+      <div class="prob-fill-home" style="width:${p.hWin}%"></div>
+    </div>
+    <span class="prob-label">${p.hWin}% ${g.home}</span>
+  </div>
+
+  <div class="pred-grid">
+    <div class="pred-cell">
+      <div class="pred-label">Full Game Winner</div>
+      <div class="pred-value" style="color:var(--teal)">${p.winner}</div>
+      <div class="pred-sub">${p.conf} confidence</div>
+    </div>
+    <div class="pred-cell">
+      <div class="pred-label">Full Game O/U</div>
+      <div class="pred-value">${p.fullTotal}</div>
+      <div class="pred-sub">Combined pts total</div>
+    </div>
+    <div class="pred-cell">
+      <div class="pred-label">${g.away} Team Total</div>
+      <div class="pred-value">${p.aScore}</div>
+      <div class="pred-sub">Spread ${aSpreadStr}</div>
+    </div>
+    <div class="pred-cell">
+      <div class="pred-label">${g.home} Team Total</div>
+      <div class="pred-value">${p.hScore}</div>
+      <div class="pred-sub">Spread ${hSpreadStr}</div>
+    </div>
+  </div>
+
+  <div class="h1-section">
+    <div class="h1-section-title">1st Half Predictions</div>
+    <div class="h1-grid">
+      <div class="h1-cell">
+        <div class="pred-label">1H Winner</div>
+        <div class="pred-value" style="font-size:18px;color:var(--yellow)">${p.winner}</div>
+        <div class="pred-sub">Mirrors full game</div>
+      </div>
+      <div class="h1-cell">
+        <div class="pred-label">1H Over/Under</div>
+        <div class="pred-value" style="font-size:18px;">${p.h1Total}</div>
+        <div class="pred-sub">1st half total pts</div>
+      </div>
+      <div class="h1-cell">
+        <div class="pred-label">${g.away} 1H Total</div>
+        <div class="pred-value" style="font-size:18px;">${p.aScore1H}</div>
+        <div class="pred-sub">Spread ${h1SpreadA}</div>
+      </div>
+      <div class="h1-cell">
+        <div class="pred-label">${g.home} 1H Total</div>
+        <div class="pred-value" style="font-size:18px;">${p.hScore1H}</div>
+        <div class="pred-sub">Spread ${h1SpreadH}</div>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ──────────────────────────────────────────────────────────────
+//  BUILD ALL
+// ──────────────────────────────────────────────────────────────
+const eloMap = buildElo();
+
+// Today
+const todayContainer = document.getElementById('today-games');
+TODAY_GAMES.forEach((g, i) => {
+  const p = predict(g.home, g.away, eloMap);
+  todayContainer.innerHTML += renderGame(g, p, i);
+});
+
+// Tomorrow
+const tmrContainer = document.getElementById('tomorrow-games');
+TMR_GAMES.forEach((g, i) => {
+  const p = predict(g.home, g.away, eloMap);
+  tmrContainer.innerHTML += renderGame(g, p, i);
+});
+
+// ELO Rankings table
+const sorted = Object.keys(eloMap).sort((a,b) => eloMap[b] - eloMap[a]);
+const tbodyEl = document.getElementById('elo-tbody');
+
+sorted.forEach((abbr, i) => {
+  const elo = Math.round(eloMap[abbr]);
+  const meta = TEAMS_META[abbr];
+  const eloClass = elo >= 1560 ? 'elo-elite' : elo >= 1500 ? 'elo-above' : 'elo-below';
+  const barClass = elo >= 1560 ? 'elo-bar-elite' : elo >= 1500 ? 'elo-bar-above' : 'elo-bar-below';
+  const barW = Math.max(5, Math.min(100, ((elo - 1350) / 300) * 100));
+
+  tbodyEl.innerHTML += `
+    <tr>
+      <td><span class="rank-num">${i+1}</span></td>
+      <td><span class="team-name-cell">${meta.name}</span></td>
+      <td><span class="abbr-cell">${abbr}</span></td>
+      <td><span class="conf-tag conf-${meta.conf}">${meta.conf}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:13px;">${WL[abbr]}</td>
+      <td style="font-size:13px;">${(WPCT[abbr]*100).toFixed(1)}%</td>
+      <td>
+        <div class="elo-bar-wrap">
+          <span class="elo-val ${eloClass}">${elo}</span>
+          <div class="elo-bar-bg">
+            <div class="elo-bar-fill ${barClass}" style="width:${barW}%"></div>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+});
+
+// Chart.js ELO Bar
+const chartLabels = sorted;
+const chartData = sorted.map(a => Math.round(eloMap[a]));
+const chartColors = chartData.map(v => v >= 1560 ? '#00d4aa' : v >= 1500 ? '#ffd166' : '#ef476f');
+
+new Chart(document.getElementById('eloChart'), {
+  type: 'bar',
+  data: {
+    labels: chartLabels,
+    datasets: [{
+      label: 'ELO Rating',
+      data: chartData,
+      backgroundColor: chartColors,
+      borderRadius: 4,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ELO: ${ctx.raw}`,
+          title: ctx => TEAMS_META[ctx[0].label]?.name || ctx[0].label,
+        },
+        backgroundColor: '#1c2030',
+        titleColor: '#e8eaf0',
+        bodyColor: '#9ca3af',
+        borderColor: '#ffffff18',
+        borderWidth: 1,
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#6b7280', font: { family: "'DM Mono', monospace", size: 11 } },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+      },
+      y: {
+        min: 1350,
+        max: 1650,
+        ticks: {
+          color: '#6b7280',
+          font: { family: "'DM Mono', monospace", size: 11 },
+          callback: v => v,
+        },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+      }
+    }
+  }
+});
+
+// Tab switching
+function switchTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
+}
+</script>
+</body>
+</html>
