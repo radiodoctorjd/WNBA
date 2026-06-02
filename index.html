@@ -221,9 +221,11 @@ function renderGame(g, idx) {
   const spread = g.spread;
   const hSpreadStr = spread > 0 ? `-${spread}` : `+${Math.abs(spread)}`;
   const aSpreadStr = spread > 0 ? `+${spread}` : `-${Math.abs(spread)}`;
-  const h1SpreadH  = (spread/2) > 0 ? `-${(spread/2).toFixed(1)}` : `+${Math.abs(spread/2).toFixed(1)}`;
-  const h1SpreadA  = (spread/2) > 0 ? `+${(spread/2).toFixed(1)}` : `-${Math.abs(spread/2).toFixed(1)}`;
-  const winnerName = g.winner === g.home ? g.homeName : g.awayName;
+  // 1H spread comes from independent H1 engine
+  const s1H = g.spread1H;
+  const h1SpreadH = s1H < 0 ? `+${Math.abs(s1H)}` : `-${s1H}`;
+  const h1SpreadA = s1H > 0 ? `+${s1H}` : `${s1H}`;
+  const hFav1H = g.homeWinProb1H >= 50;
 
   return `
 <div class="game-card animate-in" style="animation-delay:${idx * 0.08}s">
@@ -281,17 +283,17 @@ function renderGame(g, idx) {
     </div>
   </div>
   <div class="h1-section">
-    <div class="h1-section-title">1st Half Predictions</div>
+    <div class="h1-section-title">1st Half Predictions — Independent H1 ELO Model</div>
     <div class="h1-grid">
       <div class="h1-cell">
         <div class="pred-label">1H Winner</div>
         <div class="pred-value" style="font-size:18px;color:var(--yellow)">${g.winner1H}</div>
-        <div class="pred-sub">Mirrors full game</div>
+        <div class="pred-sub">${g.awayWinProb1H}% / ${g.homeWinProb1H}% · <span class="conf-badge conf-${g.confidence1H}" style="font-size:10px;padding:1px 6px">${g.confidence1H}</span></div>
       </div>
       <div class="h1-cell">
         <div class="pred-label">1H Over/Under</div>
         <div class="pred-value" style="font-size:18px;">${g.h1Total}</div>
-        <div class="pred-sub">1st half total pts</div>
+        <div class="pred-sub">H1 ELO: ${g.awayH1Elo} vs ${g.homeH1Elo}</div>
       </div>
       <div class="h1-cell">
         <div class="pred-label">${g.away} 1H Total</div>
@@ -351,7 +353,7 @@ function renderRankings(rankings) {
         <thead>
           <tr>
             <th>#</th><th>Team</th><th>Abbr</th><th>Conf</th>
-            <th>W-L</th><th>Win%</th><th>ELO Rating</th>
+            <th>W-L</th><th>Win%</th><th>Full Game ELO</th><th>1H ELO</th>
           </tr>
         </thead>
         <tbody id="elo-tbody"></tbody>
@@ -368,6 +370,11 @@ function renderRankings(rankings) {
     const eloClass = r.elo >= 1560 ? 'elo-elite' : r.elo >= 1500 ? 'elo-above' : 'elo-below';
     const barClass = r.elo >= 1560 ? 'elo-bar-elite' : r.elo >= 1500 ? 'elo-bar-above' : 'elo-bar-below';
     const barW = Math.max(5, Math.min(100, ((r.elo - minElo) / (maxElo - minElo + 1)) * 100));
+    const h1EloClass = r.h1Elo >= 1560 ? 'elo-elite' : r.h1Elo >= 1500 ? 'elo-above' : 'elo-below';
+    const h1BarClass = r.h1Elo >= 1560 ? 'elo-bar-elite' : r.h1Elo >= 1500 ? 'elo-bar-above' : 'elo-bar-below';
+    const minH1 = Math.min(...rankings.map(x => x.h1Elo));
+    const maxH1 = Math.max(...rankings.map(x => x.h1Elo));
+    const h1BarW = Math.max(5, Math.min(100, ((r.h1Elo - minH1) / (maxH1 - minH1 + 1)) * 100));
     tbody.innerHTML += `
       <tr>
         <td><span class="rank-num">${i+1}</span></td>
@@ -380,6 +387,12 @@ function renderRankings(rankings) {
           <div class="elo-bar-wrap">
             <span class="elo-val ${eloClass}">${r.elo}</span>
             <div class="elo-bar-bg"><div class="elo-bar-fill ${barClass}" style="width:${barW}%"></div></div>
+          </div>
+        </td>
+        <td>
+          <div class="elo-bar-wrap">
+            <span class="elo-val ${h1EloClass}">${r.h1Elo}</span>
+            <div class="elo-bar-bg"><div class="elo-bar-fill ${h1BarClass}" style="width:${h1BarW}%"></div></div>
           </div>
         </td>
       </tr>`;
