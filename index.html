@@ -60,8 +60,9 @@
   .retry-btn:hover { background: var(--orange-dim); }
 
   /* GAME CARDS */
-  .games-grid { display: flex; flex-direction: column; gap: 40px; }
-  .game-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .games-grid { display: flex; flex-direction: column; gap: 0; }
+  .game-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 48px; }
+  .game-card:last-child { margin-bottom: 0; }
   .game-card-header { background: var(--surface2); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
   .game-time { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-dim); }
   .game-conf-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,107,53,0.2); }
@@ -95,7 +96,7 @@
   .pred-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
 
   /* 1H SECTION */
-  .h1-section { background: var(--surface2); border-top: 1px solid var(--border); }
+  .h1-section { background: var(--surface2); border-top: 1px solid var(--border); padding-bottom: 4px; }
   .h1-section-title { padding: 10px 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); }
   .h1-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
   @media (max-width: 800px) { .h1-grid { grid-template-columns: repeat(2, 1fr); } }
