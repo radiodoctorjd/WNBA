@@ -8,139 +8,153 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@300;400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #06070d;
-    --surface: #0e1117;
-    --surface2: #151820;
-    --surface3: #1c2030;
-    --border: rgba(255,255,255,0.06);
-    --border2: rgba(255,255,255,0.12);
-    --orange: #ff6b35;
-    --orange-dim: rgba(255,107,53,0.15);
-    --teal: #00d4aa;
-    --teal-dim: rgba(0,212,170,0.12);
-    --yellow: #ffd166;
-    --red: #ef476f;
-    --text: #e8eaf0;
-    --text-dim: #6b7280;
-    --text-mid: #9ca3af;
+    --bg:#06070d; --surface:#0e1117; --surface2:#151820; --surface3:#1c2030;
+    --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.12);
+    --orange:#ff6b35; --orange-dim:rgba(255,107,53,0.15);
+    --teal:#00d4aa; --teal-dim:rgba(0,212,170,0.12);
+    --yellow:#ffd166; --red:#ef476f; --red-dim:rgba(239,71,111,0.15);
+    --text:#e8eaf0; --text-dim:#6b7280; --text-mid:#9ca3af;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;min-height:100vh;}
 
   /* HEADER */
-  .site-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
-  .logo { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: 0.03em; color: var(--text); display: flex; align-items: center; gap: 10px; }
-  .logo-ball { width: 28px; height: 28px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-  .logo span { color: var(--orange); }
-  .header-meta { font-size: 12px; color: var(--text-dim); font-family: 'DM Mono', monospace; }
+  .site-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;letter-spacing:.03em;color:var(--text);display:flex;align-items:center;gap:10px;}
+  .logo-ball{width:28px;height:28px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .logo span{color:var(--orange);}
+  .header-meta{font-size:12px;color:var(--text-dim);font-family:'DM Mono',monospace;}
 
   /* TABS */
-  .tab-bar { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; padding: 0 2rem; }
-  .tab { padding: 14px 20px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; background: none; border-top: none; border-left: none; border-right: none; }
-  .tab.active { color: var(--orange); border-bottom-color: var(--orange); }
-  .tab:hover:not(.active) { color: var(--text); }
+  .tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 2rem;}
+  .tab{padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;background:none;border-top:none;border-left:none;border-right:none;}
+  .tab.active{color:var(--orange);border-bottom-color:var(--orange);}
+  .tab:hover:not(.active){color:var(--text);}
 
   /* LAYOUT */
-  .main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-  .section { display: none; }
-  .section.active { display: block; }
-  .section-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 28px; letter-spacing: 0.02em; margin-bottom: 4px; }
-  .section-subtitle { font-size: 13px; color: var(--text-dim); font-family: 'DM Mono', monospace; margin-bottom: 2rem; }
+  .main{max-width:1200px;margin:0 auto;padding:2rem;}
+  .section{display:none;} .section.active{display:block;}
+  .section-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;letter-spacing:.02em;margin-bottom:4px;}
+  .section-subtitle{font-size:13px;color:var(--text-dim);font-family:'DM Mono',monospace;margin-bottom:2rem;}
 
-  /* LOADING */
-  .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6rem 2rem; gap: 16px; }
-  .spinner { width: 36px; height: 36px; border: 3px solid var(--border2); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-dim); }
-  .error-wrap { padding: 3rem 2rem; text-align: center; }
-  .error-box { display: inline-block; background: var(--surface); border: 1px solid rgba(239,71,111,0.3); border-radius: 12px; padding: 2rem 3rem; }
-  .error-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--red); margin-bottom: 8px; }
-  .error-msg { font-size: 13px; color: var(--text-dim); font-family: 'DM Mono', monospace; }
-  .retry-btn { margin-top: 16px; padding: 8px 20px; background: none; border: 1px solid var(--orange); color: var(--orange); border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.06em; cursor: pointer; }
-  .retry-btn:hover { background: var(--orange-dim); }
+  /* LOADING / ERROR */
+  .loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6rem 2rem;gap:16px;}
+  .spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-text{font-family:'DM Mono',monospace;font-size:13px;color:var(--text-dim);}
+  .error-wrap{padding:3rem 2rem;text-align:center;}
+  .error-box{display:inline-block;background:var(--surface);border:1px solid rgba(239,71,111,.3);border-radius:12px;padding:2rem 3rem;}
+  .error-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--red);margin-bottom:8px;}
+  .error-msg{font-size:13px;color:var(--text-dim);font-family:'DM Mono',monospace;}
+  .retry-btn{margin-top:16px;padding:8px 20px;background:none;border:1px solid var(--orange);color:var(--orange);border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.06em;cursor:pointer;}
+  .retry-btn:hover{background:var(--orange-dim);}
 
   /* GAME CARDS */
-  .games-grid { display: flex; flex-direction: column; gap: 0; }
-  .game-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 48px; }
-  .game-card:last-child { margin-bottom: 0; }
-  .game-card-header { background: var(--surface2); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-  .game-time { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-dim); }
-  .game-conf-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,107,53,0.2); }
-  .matchup { padding: 20px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center; }
-  .team-block { display: flex; flex-direction: column; gap: 4px; }
-  .team-block.home { text-align: right; }
-  .team-abbr { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 36px; letter-spacing: 0.03em; line-height: 1; }
-  .team-name { font-size: 12px; color: var(--text-mid); font-weight: 400; }
-  .team-elo { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-  .team-win-pct { font-size: 13px; font-weight: 600; margin-top: 4px; }
-  .team-win-pct.fav { color: var(--teal); }
-  .team-win-pct.dog { color: var(--text-dim); }
-  .vs-block { text-align: center; padding: 0 12px; }
-  .vs-text { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; color: var(--text-dim); letter-spacing: 0.1em; }
-  .winner-badge { margin-top: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(0,212,170,0.2); }
+  .games-grid{display:flex;flex-direction:column;gap:0;}
+  .game-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:48px;}
+  .game-card:last-child{margin-bottom:0;}
+
+  /* CARD HEADER */
+  .game-card-header{background:var(--surface2);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+  .game-num{font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim);}
+  .game-time-badge{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:4px;background:var(--orange-dim);color:var(--orange);border:1px solid rgba(255,107,53,.2);}
+
+  /* MATCHUP */
+  .matchup{padding:20px 24px;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;}
+  .team-block{display:flex;flex-direction:column;gap:4px;}
+  .team-block.home{text-align:right;align-items:flex-end;}
+  .team-block.away{align-items:flex-start;}
+  .team-logo{width:64px;height:64px;object-fit:contain;margin-bottom:4px;}
+  .team-logo-err{width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:var(--surface3);border-radius:50%;font-size:10px;color:var(--text-dim);margin-bottom:4px;}
+  .team-abbr{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:32px;letter-spacing:.03em;line-height:1;}
+  .team-name-small{font-size:12px;color:var(--text-mid);font-weight:400;}
+  .team-elo-tag{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);margin-top:2px;}
+  .team-win-pct{font-size:14px;font-weight:600;margin-top:4px;}
+  .team-win-pct.fav{color:var(--teal);}
+  .team-win-pct.dog{color:var(--text-dim);}
+  .vs-block{text-align:center;padding:0 12px;}
+  .vs-text{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--text-dim);letter-spacing:.1em;}
+  .winner-badge{margin-top:6px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:var(--teal-dim);color:var(--teal);border:1px solid rgba(0,212,170,.2);}
+  .conf-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;padding:2px 8px;border-radius:4px;text-transform:uppercase;}
+  .conf-HIGH{background:rgba(0,212,170,.15);color:var(--teal);border:1px solid rgba(0,212,170,.25);}
+  .conf-MED{background:rgba(255,209,102,.15);color:var(--yellow);border:1px solid rgba(255,209,102,.25);}
+  .conf-LOW{background:rgba(239,71,111,.15);color:var(--red);border:1px solid rgba(239,71,111,.25);}
 
   /* PROB BAR */
-  .prob-bar-wrap { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-  .prob-bar-track { flex: 1; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; display: flex; }
-  .prob-fill-away { background: var(--text-dim); height: 100%; }
-  .prob-fill-home { background: var(--orange); height: 100%; }
-  .prob-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+  .prob-bar-wrap{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .prob-bar-track{flex:1;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;display:flex;}
+  .prob-fill-away{background:var(--text-dim);height:100%;}
+  .prob-fill-home{background:var(--orange);height:100%;}
+  .prob-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);white-space:nowrap;}
 
   /* PRED GRID */
-  .pred-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--border); }
-  @media (max-width: 800px) { .pred-grid { grid-template-columns: repeat(2, 1fr); } }
-  .pred-cell { padding: 16px 20px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .pred-cell:nth-child(4n) { border-right: none; }
-  .pred-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
-  .pred-value { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; }
-  .pred-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+  .pred-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);}
+  @media(max-width:800px){.pred-grid{grid-template-columns:repeat(2,1fr);}}
+  .pred-cell{padding:16px 20px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .pred-cell:nth-child(4n){border-right:none;}
+  .pred-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+  .pred-value{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;line-height:1;}
+  .pred-sub{font-size:11px;color:var(--text-dim);margin-top:4px;}
 
-  /* 1H SECTION */
-  .h1-section { background: var(--surface2); border-top: 1px solid var(--border); padding-bottom: 4px; }
-  .h1-section-title { padding: 10px 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); }
-  .h1-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
-  @media (max-width: 800px) { .h1-grid { grid-template-columns: repeat(2, 1fr); } }
-  .h1-cell { padding: 12px 20px; border-right: 1px solid var(--border); }
-  .h1-cell:last-child { border-right: none; }
+  /* 1H */
+  .h1-section{background:var(--surface2);border-top:1px solid var(--border);padding-bottom:4px;}
+  .h1-section-title{padding:10px 20px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border);}
+  .h1-grid{display:grid;grid-template-columns:repeat(4,1fr);}
+  @media(max-width:800px){.h1-grid{grid-template-columns:repeat(2,1fr);}}
+  .h1-cell{padding:12px 20px;border-right:1px solid var(--border);}
+  .h1-cell:last-child{border-right:none;}
 
-  /* CONFIDENCE */
-  .conf-badge { display: inline-block; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
-  .conf-HIGH { background: rgba(0,212,170,0.15); color: var(--teal); border: 1px solid rgba(0,212,170,0.25); }
-  .conf-MED  { background: rgba(255,209,102,0.15); color: var(--yellow); border: 1px solid rgba(255,209,102,0.25); }
-  .conf-LOW  { background: rgba(239,71,111,0.15); color: var(--red); border: 1px solid rgba(239,71,111,0.25); }
+  /* INJURIES */
+  .injury-section{border-top:1px solid var(--border);background:var(--surface);}
+  .injury-header{padding:10px 20px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+  .injury-dot{width:6px;height:6px;border-radius:50%;background:var(--red);}
+  .injury-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .injury-team-col{padding:12px 20px;border-right:1px solid var(--border);}
+  .injury-team-col:last-child{border-right:none;}
+  .injury-team-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--text-mid);margin-bottom:8px;text-transform:uppercase;}
+  .injury-player{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);}
+  .injury-player:last-child{border-bottom:none;}
+  .injury-status{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0;}
+  .status-Out{background:rgba(239,71,111,.2);color:#ff8fa3;}
+  .status-Doubtful{background:rgba(255,107,53,.2);color:#ff9d7a;}
+  .status-Questionable{background:rgba(255,209,102,.2);color:#ffd166;}
+  .status-DTD{background:rgba(255,209,102,.15);color:#ffe08a;}
+  .injury-name{font-size:13px;font-weight:500;flex:1;}
+  .injury-detail{font-size:11px;color:var(--text-dim);}
+  .no-injuries{font-size:12px;color:var(--text-dim);font-family:'DM Mono',monospace;padding:8px 0;}
 
-  /* ELO TABLE */
-  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-  .stat-card-label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 6px; }
-  .stat-card-value { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 28px; line-height: 1; }
-  .stat-card-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
-  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .elo-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  .elo-table th { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border2); background: var(--surface2); font-weight: 400; }
-  .elo-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  .elo-table tr:last-child td { border-bottom: none; }
-  .elo-table tr:hover td { background: var(--surface2); }
-  .rank-num { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-dim); }
-  .team-name-cell { font-weight: 600; }
-  .abbr-cell { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--text-mid); font-size: 13px; letter-spacing: 0.05em; }
-  .elo-bar-wrap { display: flex; align-items: center; gap: 10px; }
-  .elo-val { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; min-width: 46px; text-align: right; }
-  .elo-bar-bg { flex: 1; height: 4px; background: var(--surface3); border-radius: 2px; max-width: 160px; }
-  .elo-bar-fill { height: 100%; border-radius: 2px; }
-  .elo-elite { color: var(--teal); } .elo-above { color: var(--yellow); } .elo-below { color: var(--red); }
-  .elo-bar-elite { background: var(--teal); } .elo-bar-above { background: var(--yellow); } .elo-bar-below { background: var(--red); }
-  .conf-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 3px; }
-  .conf-East { background: rgba(255,107,53,0.12); color: var(--orange); }
-  .conf-West { background: rgba(0,212,170,0.12); color: var(--teal); }
-  .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
-  .chart-title { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 16px; }
+  /* ELO RANKINGS */
+  .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2rem;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;}
+  .stat-card-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:6px;}
+  .stat-card-value{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;line-height:1;}
+  .stat-card-sub{font-size:11px;color:var(--text-dim);margin-top:4px;}
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .elo-table{width:100%;border-collapse:collapse;font-size:14px;}
+  .elo-table th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);text-align:left;padding:10px 16px;border-bottom:1px solid var(--border2);background:var(--surface2);font-weight:400;}
+  .elo-table td{padding:10px 16px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  .elo-table tr:last-child td{border-bottom:none;}
+  .elo-table tr:hover td{background:var(--surface2);}
+  .rank-num{font-family:'DM Mono',monospace;font-size:12px;color:var(--text-dim);}
+  .team-logo-sm{width:28px;height:28px;object-fit:contain;}
+  .abbr-cell{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--text-mid);font-size:13px;letter-spacing:.05em;}
+  .elo-bar-wrap{display:flex;align-items:center;gap:10px;}
+  .elo-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;min-width:46px;text-align:right;}
+  .elo-bar-bg{flex:1;height:4px;background:var(--surface3);border-radius:2px;max-width:160px;}
+  .elo-bar-fill{height:100%;border-radius:2px;}
+  .elo-elite{color:var(--teal);} .elo-above{color:var(--yellow);} .elo-below{color:var(--red);}
+  .elo-bar-elite{background:var(--teal);} .elo-bar-above{background:var(--yellow);} .elo-bar-below{background:var(--red);}
+  .conf-tag{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;padding:2px 8px;border-radius:3px;}
+  .conf-East{background:rgba(255,107,53,.12);color:var(--orange);}
+  .conf-West{background:rgba(0,212,170,.12);color:var(--teal);}
+  .chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px;}
+  .chart-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mid);margin-bottom:16px;}
 
   /* ANIMATE */
-  .animate-in { animation: fadeUp 0.4s ease forwards; opacity: 0; }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .animate-in{animation:fadeUp .4s ease forwards;opacity:0;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
-  .footer { margin-top: 4rem; padding: 2rem; text-align: center; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-dim); font-family: 'DM Mono', monospace; }
+  .footer{margin-top:4rem;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;}
 </style>
 </head>
 <body>
@@ -160,17 +174,16 @@
 </nav>
 
 <main class="main">
-
   <section class="section active" id="tab-today">
     <div class="section-title">Today's Games</div>
     <div class="section-subtitle" id="today-subtitle">Loading predictions...</div>
-    <div id="today-games"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live predictions from Google Sheets...</div></div></div>
+    <div id="today-games"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live data from Google Sheets...</div></div></div>
   </section>
 
   <section class="section" id="tab-tomorrow">
     <div class="section-title">Tomorrow's Games</div>
     <div class="section-subtitle" id="tomorrow-subtitle">Loading predictions...</div>
-    <div id="tomorrow-games"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live predictions from Google Sheets...</div></div></div>
+    <div id="tomorrow-games"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live data from Google Sheets...</div></div></div>
   </section>
 
   <section class="section" id="tab-rankings">
@@ -178,68 +191,147 @@
     <div class="section-subtitle" id="rankings-subtitle">Loading rankings...</div>
     <div id="rankings-content"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live ELO ratings from Google Sheets...</div></div></div>
   </section>
-
 </main>
 
-<footer class="footer">
-  WNBA Prediction Model · 2026 Season
-</footer>
+<footer class="footer">WNBA Prediction Model · 2026 Season</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyI_ZAQwD6x2EKsVJwEsRnckquGqNsDnnPsTZdGM_FzPgIey-lsK204JEWahHycJnc/exec';
 
+// ── ESPN team logo & injury data ──────────────────────────────
+// Logo URLs from ESPN CDN (confirmed via API)
+const TEAM_LOGOS = {
+  ATL: 'https://a.espncdn.com/i/teamlogos/wnba/500/atl.png',
+  CHI: 'https://a.espncdn.com/i/teamlogos/wnba/500/chi.png',
+  CON: 'https://a.espncdn.com/i/teamlogos/wnba/500/con.png',
+  DAL: 'https://a.espncdn.com/i/teamlogos/wnba/500/dal.png',
+  GSV: 'https://a.espncdn.com/i/teamlogos/wnba/500/gs.png',
+  IND: 'https://a.espncdn.com/i/teamlogos/wnba/500/ind.png',
+  LVA: 'https://a.espncdn.com/i/teamlogos/wnba/500/lv.png',
+  LAS: 'https://a.espncdn.com/i/teamlogos/wnba/500/la.png',
+  MIN: 'https://a.espncdn.com/i/teamlogos/wnba/500/min.png',
+  NYL: 'https://a.espncdn.com/i/teamlogos/wnba/500/ny.png',
+  PHX: 'https://a.espncdn.com/i/teamlogos/wnba/500/phx.png',
+  PDX: 'https://a.espncdn.com/i/teamlogos/wnba/500/por.png',
+  SEA: 'https://a.espncdn.com/i/teamlogos/wnba/500/sea.png',
+  TOR: 'https://a.espncdn.com/i/teamlogos/wnba/500/tor.png',
+  WAS: 'https://a.espncdn.com/i/teamlogos/wnba/500/wsh.png',
+};
+
+// ESPN team IDs for injury API
+const TEAM_ESPN_IDS = {
+  ATL:'20', CHI:'19', CON:'18', DAL:'3',  GSV:'129689',
+  IND:'5',  LVA:'17', LAS:'6', MIN:'8',   NYL:'9',
+  PHX:'11', PDX:'132052', SEA:'14', TOR:'131935', WAS:'16',
+};
+
+// Cache for injury data
+const injuryCache = {};
+
 // ── JSONP fetch ───────────────────────────────────────────────
-function fetchData() {
+function fetchJSONP(url) {
   return new Promise((resolve, reject) => {
-    const cbName = 'wnba_cb_' + Date.now();
+    const cbName = 'cb_' + Math.random().toString(36).slice(2);
     const script = document.createElement('script');
-    const timer = setTimeout(() => {
-      cleanup();
-      reject(new Error('Request timed out after 15s'));
-    }, 15000);
-
-    window[cbName] = function(data) {
-      cleanup();
-      resolve(typeof data === 'string' ? JSON.parse(data) : data);
-    };
-
-    function cleanup() {
-      clearTimeout(timer);
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-
+    const timer = setTimeout(() => { cleanup(); reject(new Error('Timeout')); }, 15000);
+    window[cbName] = data => { cleanup(); resolve(typeof data==='string'?JSON.parse(data):data); };
+    function cleanup(){ clearTimeout(timer); delete window[cbName]; script.parentNode&&script.parentNode.removeChild(script); }
     script.onerror = () => { cleanup(); reject(new Error('Script load failed')); };
-    script.src = WEBAPP_URL + '?callback=' + cbName;
+    script.src = url + (url.includes('?')?'&':'?') + 'callback=' + cbName;
     document.head.appendChild(script);
   });
 }
 
-// ── RENDER GAME CARD ─────────────────────────────────────────
-function renderGame(g, idx) {
-  const hFav = g.homeWinProb >= 50;
-  const spread = g.spread;
-  const hSpreadStr = spread > 0 ? `-${spread}` : `+${Math.abs(spread)}`;
-  const aSpreadStr = spread > 0 ? `+${spread}` : `-${Math.abs(spread)}`;
-  // 1H spread comes from independent H1 engine
-  const s1H = g.spread1H;
-  const h1SpreadH = s1H < 0 ? `+${Math.abs(s1H)}` : `-${s1H}`;
-  const h1SpreadA = s1H > 0 ? `+${s1H}` : `${s1H}`;
-  const hFav1H = g.homeWinProb1H >= 50;
+// ── Fetch injuries for a team from ESPN ─────────────────────
+async function fetchInjuries(abbr) {
+  if (injuryCache[abbr] !== undefined) return injuryCache[abbr];
+  const espnId = TEAM_ESPN_IDS[abbr];
+  if (!espnId) return (injuryCache[abbr] = []);
+  try {
+    const url = `https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/teams/${espnId}/injuries`;
+    // ESPN injuries don't require a callback — use a plain script tag trick
+    const data = await fetchJSONP(url);
+    const items = data?.injuries || [];
+    const parsed = items.map(p => ({
+      name: p.athlete?.displayName || p.athlete?.fullName || 'Unknown',
+      status: p.status || 'Out',
+      injury: p.type || p.description || '',
+    })).filter(p => p.name !== 'Unknown');
+    return (injuryCache[abbr] = parsed);
+  } catch(e) {
+    // Silently fail — injuries are supplementary
+    return (injuryCache[abbr] = []);
+  }
+}
+
+// ── Logo img tag ──────────────────────────────────────────────
+function logoImg(abbr, size='64') {
+  const src = TEAM_LOGOS[abbr];
+  if (!src) return `<div class="team-logo-err" style="width:${size}px;height:${size}px">${abbr}</div>`;
+  return `<img class="team-logo" src="${src}" alt="${abbr}" width="${size}" height="${size}" onerror="this.style.display='none'">`;
+}
+
+// ── Status badge ──────────────────────────────────────────────
+function statusClass(s) {
+  if (!s) return 'status-Out';
+  const sl = s.toLowerCase();
+  if (sl.includes('out')) return 'status-Out';
+  if (sl.includes('doubt')) return 'status-Doubtful';
+  if (sl.includes('question')) return 'status-Questionable';
+  if (sl.includes('day')) return 'status-DTD';
+  return 'status-Out';
+}
+
+// ── Render injury column ──────────────────────────────────────
+function renderInjuryCol(abbr, name, players) {
+  if (!players || players.length === 0) {
+    return `<div class="injury-team-col">
+      <div class="injury-team-label">${name}</div>
+      <div class="no-injuries">No reported injuries</div>
+    </div>`;
+  }
+  const rows = players.map(p => `
+    <div class="injury-player">
+      <span class="injury-status ${statusClass(p.status)}">${p.status}</span>
+      <div>
+        <div class="injury-name">${p.name}</div>
+        ${p.injury ? `<div class="injury-detail">${p.injury}</div>` : ''}
+      </div>
+    </div>`).join('');
+  return `<div class="injury-team-col">
+    <div class="injury-team-label">${name}</div>
+    ${rows}
+  </div>`;
+}
+
+// ── Render game card ──────────────────────────────────────────
+function renderGame(g, idx, awayInjuries, homeInjuries) {
+  const hFav  = g.homeWinProb >= 50;
+  const sp    = g.spread;
+  const hSpr  = sp > 0 ? `-${sp}` : `+${Math.abs(sp)}`;
+  const aSpr  = sp > 0 ? `+${sp}` : `-${Math.abs(sp)}`;
+  const s1H   = g.spread1H;
+  const h1SprH = s1H < 0 ? `+${Math.abs(s1H)}` : `-${s1H}`;
+  const h1SprA = s1H > 0 ? `+${s1H}` : `${s1H}`;
+
+  const awayCol = renderInjuryCol(g.away, g.awayName, awayInjuries);
+  const homeCol = renderInjuryCol(g.home, g.homeName, homeInjuries);
 
   return `
-<div class="game-card animate-in" style="animation-delay:${idx * 0.08}s">
+<div class="game-card animate-in" style="animation-delay:${idx*.08}s">
   <div class="game-card-header">
-    <span class="game-time">🏀 GAME ${idx + 1}</span>
-    <span class="game-conf-badge">${g.time}</span>
+    <span class="game-num">🏀 GAME ${idx+1}</span>
+    <span class="game-time-badge">${g.time}</span>
   </div>
+
   <div class="matchup">
-    <div class="team-block">
-      <div class="team-abbr" style="color:${!hFav ? 'var(--orange)' : 'var(--text-mid)'}">${g.away}</div>
-      <div class="team-name">${g.awayName}</div>
-      <div class="team-elo">ELO ${g.awayElo}</div>
-      <div class="team-win-pct ${!hFav ? 'fav' : 'dog'}">${g.awayWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
+    <div class="team-block away">
+      ${logoImg(g.away)}
+      <div class="team-abbr" style="color:${!hFav?'var(--orange)':'var(--text-mid)'}">${g.away}</div>
+      <div class="team-name-small">${g.awayName}</div>
+      <div class="team-elo-tag">ELO ${g.awayElo}</div>
+      <div class="team-win-pct ${!hFav?'fav':'dog'}">${g.awayWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
     </div>
     <div class="vs-block">
       <div class="vs-text">@</div>
@@ -247,12 +339,14 @@ function renderGame(g, idx) {
       <div class="conf-badge conf-${g.confidence}" style="margin-top:6px;display:block;text-align:center">${g.confidence}</div>
     </div>
     <div class="team-block home">
-      <div class="team-abbr" style="color:${hFav ? 'var(--orange)' : 'var(--text-mid)'}">${g.home}</div>
-      <div class="team-name">${g.homeName} <span style="font-size:10px;color:var(--text-dim)">[Home]</span></div>
-      <div class="team-elo">ELO ${g.homeElo}</div>
-      <div class="team-win-pct ${hFav ? 'fav' : 'dog'}">${g.homeWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
+      ${logoImg(g.home)}
+      <div class="team-abbr" style="color:${hFav?'var(--orange)':'var(--text-mid)'}">${g.home}</div>
+      <div class="team-name-small">${g.homeName} <span style="font-size:10px;color:var(--text-dim)">[Home]</span></div>
+      <div class="team-elo-tag">ELO ${g.homeElo}</div>
+      <div class="team-win-pct ${hFav?'fav':'dog'}">${g.homeWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
     </div>
   </div>
+
   <div class="prob-bar-wrap">
     <span class="prob-label">${g.away} ${g.awayWinProb}%</span>
     <div class="prob-bar-track">
@@ -261,6 +355,7 @@ function renderGame(g, idx) {
     </div>
     <span class="prob-label">${g.homeWinProb}% ${g.home}</span>
   </div>
+
   <div class="pred-grid">
     <div class="pred-cell">
       <div class="pred-label">Full Game Winner</div>
@@ -275,14 +370,15 @@ function renderGame(g, idx) {
     <div class="pred-cell">
       <div class="pred-label">${g.away} Team Total</div>
       <div class="pred-value">${g.awayScore}</div>
-      <div class="pred-sub">Spread ${aSpreadStr}</div>
+      <div class="pred-sub">Spread ${aSpr}</div>
     </div>
     <div class="pred-cell">
       <div class="pred-label">${g.home} Team Total</div>
       <div class="pred-value">${g.homeScore}</div>
-      <div class="pred-sub">Spread ${hSpreadStr}</div>
+      <div class="pred-sub">Spread ${hSpr}</div>
     </div>
   </div>
+
   <div class="h1-section">
     <div class="h1-section-title">1st Half Predictions</div>
     <div class="h1-grid">
@@ -299,214 +395,167 @@ function renderGame(g, idx) {
       <div class="h1-cell">
         <div class="pred-label">${g.away} 1H Total</div>
         <div class="pred-value" style="font-size:18px;">${g.awayScore1H}</div>
-        <div class="pred-sub">Spread ${h1SpreadA}</div>
+        <div class="pred-sub">Spread ${h1SprA}</div>
       </div>
       <div class="h1-cell">
         <div class="pred-label">${g.home} 1H Total</div>
         <div class="pred-value" style="font-size:18px;">${g.homeScore1H}</div>
-        <div class="pred-sub">Spread ${h1SpreadH}</div>
+        <div class="pred-sub">Spread ${h1SprH}</div>
       </div>
+    </div>
+  </div>
+
+  <div class="injury-section">
+    <div class="injury-header">
+      <div class="injury-dot"></div>
+      Injury Report
+    </div>
+    <div class="injury-grid">
+      ${awayCol}
+      ${homeCol}
     </div>
   </div>
 </div>`;
 }
 
-// ── RENDER ELO RANKINGS ──────────────────────────────────────
+// ── Render rankings ───────────────────────────────────────────
 function renderRankings(rankings) {
-  const top = rankings[0];
-  const bottom = rankings[rankings.length - 1];
+  const top    = rankings[0];
+  const bottom = rankings[rankings.length-1];
   const spread = top.elo - bottom.elo;
-  const avg = Math.round(rankings.reduce((s, r) => s + r.elo, 0) / rankings.length);
+  const avg    = Math.round(rankings.reduce((s,r)=>s+r.elo,0)/rankings.length);
 
   document.getElementById('rankings-content').innerHTML = `
     <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-card-label">Top ELO Team</div>
-        <div class="stat-card-value" style="color:var(--teal)">${top.abbr}</div>
-        <div class="stat-card-sub">${top.name} · ${top.elo}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">Avg League ELO</div>
-        <div class="stat-card-value">${avg}</div>
-        <div class="stat-card-sub">Baseline · calibrated</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">Lowest ELO</div>
-        <div class="stat-card-value" style="color:var(--red)">${bottom.abbr}</div>
-        <div class="stat-card-sub">${bottom.name} · ${bottom.elo}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">ELO Spread</div>
-        <div class="stat-card-value">${spread}</div>
-        <div class="stat-card-sub">pts top-to-bottom</div>
-      </div>
+      <div class="stat-card"><div class="stat-card-label">Top ELO Team</div><div class="stat-card-value" style="color:var(--teal)">${top.abbr}</div><div class="stat-card-sub">${top.name} · ${top.elo}</div></div>
+      <div class="stat-card"><div class="stat-card-label">Avg League ELO</div><div class="stat-card-value">${avg}</div><div class="stat-card-sub">Baseline · calibrated</div></div>
+      <div class="stat-card"><div class="stat-card-label">Lowest ELO</div><div class="stat-card-value" style="color:var(--red)">${bottom.abbr}</div><div class="stat-card-sub">${bottom.name} · ${bottom.elo}</div></div>
+      <div class="stat-card"><div class="stat-card-label">ELO Spread</div><div class="stat-card-value">${spread}</div><div class="stat-card-sub">pts top-to-bottom</div></div>
     </div>
-
     <div class="chart-wrap">
       <div class="chart-title">ELO Ratings by Team</div>
-      <div style="position:relative;width:100%;height:320px;">
-        <canvas id="eloChart" role="img" aria-label="Bar chart of WNBA team ELO ratings"></canvas>
-      </div>
+      <div style="position:relative;width:100%;height:320px;"><canvas id="eloChart"></canvas></div>
     </div>
-
     <div class="table-wrap">
       <table class="elo-table">
-        <thead>
-          <tr>
-            <th>#</th><th>Team</th><th>Abbr</th><th>Conf</th>
-            <th>W-L</th><th>Win%</th><th>Full Game ELO</th><th>1H ELO</th>
-          </tr>
-        </thead>
+        <thead><tr><th>#</th><th></th><th>Team</th><th>Abbr</th><th>Conf</th><th>W-L</th><th>Win%</th><th>Full Game ELO</th><th>1H ELO</th></tr></thead>
         <tbody id="elo-tbody"></tbody>
       </table>
     </div>`;
 
-  // Table rows
-  const WL_MAP = { ATL:"5-2",CHI:"3-5",CON:"2-8",IND:"4-4",NYL:"5-4",TOR:"5-4",WAS:"3-4",DAL:"6-3",GSV:"5-3",LAS:"4-4",LVA:"5-3",MIN:"7-2",PDX:"6-4",PHX:"2-8",SEA:"3-7" };
-  const WPCT_MAP = { ATL:.714,CHI:.375,CON:.200,IND:.500,NYL:.556,TOR:.556,WAS:.429,DAL:.667,GSV:.625,LAS:.500,LVA:.625,MIN:.778,PDX:.600,PHX:.200,SEA:.300 };
+  const WL   = {ATL:"5-2",CHI:"3-5",CON:"2-8",IND:"4-4",NYL:"5-4",TOR:"5-4",WAS:"3-4",DAL:"6-3",GSV:"5-3",LAS:"4-4",LVA:"5-3",MIN:"7-2",PDX:"6-4",PHX:"2-8",SEA:"3-7"};
+  const WPCT = {ATL:.714,CHI:.375,CON:.200,IND:.500,NYL:.556,TOR:.556,WAS:.429,DAL:.667,GSV:.625,LAS:.500,LVA:.625,MIN:.778,PDX:.600,PHX:.200,SEA:.300};
   const tbody = document.getElementById('elo-tbody');
   const minElo = bottom.elo, maxElo = top.elo;
+  const minH1  = Math.min(...rankings.map(r=>r.h1Elo||r.elo));
+  const maxH1  = Math.max(...rankings.map(r=>r.h1Elo||r.elo));
 
-  rankings.forEach((r, i) => {
-    const eloClass = r.elo >= 1560 ? 'elo-elite' : r.elo >= 1500 ? 'elo-above' : 'elo-below';
-    const barClass = r.elo >= 1560 ? 'elo-bar-elite' : r.elo >= 1500 ? 'elo-bar-above' : 'elo-bar-below';
-    const barW = Math.max(5, Math.min(100, ((r.elo - minElo) / (maxElo - minElo + 1)) * 100));
-    const h1EloClass = r.h1Elo >= 1560 ? 'elo-elite' : r.h1Elo >= 1500 ? 'elo-above' : 'elo-below';
-    const h1BarClass = r.h1Elo >= 1560 ? 'elo-bar-elite' : r.h1Elo >= 1500 ? 'elo-bar-above' : 'elo-bar-below';
-    const minH1 = Math.min(...rankings.map(x => x.h1Elo));
-    const maxH1 = Math.max(...rankings.map(x => x.h1Elo));
-    const h1BarW = Math.max(5, Math.min(100, ((r.h1Elo - minH1) / (maxH1 - minH1 + 1)) * 100));
-    tbody.innerHTML += `
-      <tr>
-        <td><span class="rank-num">${i+1}</span></td>
-        <td><span class="team-name-cell">${r.name}</span></td>
-        <td><span class="abbr-cell">${r.abbr}</span></td>
-        <td><span class="conf-tag conf-${r.conf}">${r.conf}</span></td>
-        <td style="font-family:'DM Mono',monospace;font-size:13px;">${WL_MAP[r.abbr] || '-'}</td>
-        <td style="font-size:13px;">${((WPCT_MAP[r.abbr] || 0)*100).toFixed(1)}%</td>
-        <td>
-          <div class="elo-bar-wrap">
-            <span class="elo-val ${eloClass}">${r.elo}</span>
-            <div class="elo-bar-bg"><div class="elo-bar-fill ${barClass}" style="width:${barW}%"></div></div>
-          </div>
-        </td>
-        <td>
-          <div class="elo-bar-wrap">
-            <span class="elo-val ${h1EloClass}">${r.h1Elo}</span>
-            <div class="elo-bar-bg"><div class="elo-bar-fill ${h1BarClass}" style="width:${h1BarW}%"></div></div>
-          </div>
-        </td>
-      </tr>`;
+  rankings.forEach((r,i) => {
+    const ec = r.elo>=1560?'elo-elite':r.elo>=1500?'elo-above':'elo-below';
+    const bc = r.elo>=1560?'elo-bar-elite':r.elo>=1500?'elo-bar-above':'elo-bar-below';
+    const bw = Math.max(5,Math.min(100,((r.elo-minElo)/(maxElo-minElo+1))*100));
+    const h1Elo = r.h1Elo || r.elo;
+    const h1ec = h1Elo>=1560?'elo-elite':h1Elo>=1500?'elo-above':'elo-below';
+    const h1bc = h1Elo>=1560?'elo-bar-elite':h1Elo>=1500?'elo-bar-above':'elo-bar-below';
+    const h1bw = Math.max(5,Math.min(100,((h1Elo-minH1)/(maxH1-minH1+1))*100));
+    tbody.innerHTML += `<tr>
+      <td><span class="rank-num">${i+1}</span></td>
+      <td><img class="team-logo-sm" src="${TEAM_LOGOS[r.abbr]||''}" alt="${r.abbr}" onerror="this.style.display='none'"></td>
+      <td style="font-weight:600">${r.name}</td>
+      <td><span class="abbr-cell">${r.abbr}</span></td>
+      <td><span class="conf-tag conf-${r.conf}">${r.conf}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:13px;">${WL[r.abbr]||'-'}</td>
+      <td style="font-size:13px;">${((WPCT[r.abbr]||0)*100).toFixed(1)}%</td>
+      <td><div class="elo-bar-wrap"><span class="elo-val ${ec}">${r.elo}</span><div class="elo-bar-bg"><div class="elo-bar-fill ${bc}" style="width:${bw}%"></div></div></div></td>
+      <td><div class="elo-bar-wrap"><span class="elo-val ${h1ec}">${h1Elo}</span><div class="elo-bar-bg"><div class="elo-bar-fill ${h1bc}" style="width:${h1bw}%"></div></div></div></td>
+    </tr>`;
   });
 
-  // Chart
-  const chartColors = rankings.map(r => r.elo >= 1560 ? '#00d4aa' : r.elo >= 1500 ? '#ffd166' : '#ef476f');
-  new Chart(document.getElementById('eloChart'), {
-    type: 'bar',
-    data: {
-      labels: rankings.map(r => r.abbr),
-      datasets: [{ label: 'ELO Rating', data: rankings.map(r => r.elo), backgroundColor: chartColors, borderRadius: 4, borderSkipped: false }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` ELO: ${ctx.raw}`,
-            title: ctx => rankings[ctx[0].dataIndex]?.name || ctx[0].label,
-          },
-          backgroundColor: '#1c2030', titleColor: '#e8eaf0', bodyColor: '#9ca3af', borderColor: '#ffffff18', borderWidth: 1,
-        }
-      },
-      scales: {
-        x: { ticks: { color: '#6b7280', font: { family: "'DM Mono',monospace", size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
-        y: {
-          min: Math.max(1300, minElo - 30), max: maxElo + 30,
-          ticks: { color: '#6b7280', font: { family: "'DM Mono',monospace", size: 11 } },
-          grid: { color: 'rgba(255,255,255,0.04)' }
-        }
+  const colors = rankings.map(r=>r.elo>=1560?'#00d4aa':r.elo>=1500?'#ffd166':'#ef476f');
+  new Chart(document.getElementById('eloChart'),{
+    type:'bar',
+    data:{labels:rankings.map(r=>r.abbr),datasets:[{label:'ELO',data:rankings.map(r=>r.elo),backgroundColor:colors,borderRadius:4,borderSkipped:false}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ELO: ${c.raw}`,title:c=>rankings[c[0].dataIndex]?.name},backgroundColor:'#1c2030',titleColor:'#e8eaf0',bodyColor:'#9ca3af',borderColor:'#ffffff18',borderWidth:1}},
+      scales:{
+        x:{ticks:{color:'#6b7280',font:{family:"'DM Mono',monospace",size:11}},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{min:Math.max(1300,minElo-30),max:maxElo+30,ticks:{color:'#6b7280',font:{family:"'DM Mono',monospace",size:11}},grid:{color:'rgba(255,255,255,0.04)'}}
       }
     }
   });
 }
 
-// ── SHOW ERROR ────────────────────────────────────────────────
-function showError(containerId, msg) {
-  document.getElementById(containerId).innerHTML = `
-    <div class="error-wrap">
-      <div class="error-box">
-        <div class="error-title">Unable to load data</div>
-        <div class="error-msg">${msg}</div>
-        <button class="retry-btn" onclick="init()">↻ Retry</button>
-      </div>
-    </div>`;
+// ── Error display ─────────────────────────────────────────────
+function showError(id, msg) {
+  document.getElementById(id).innerHTML = `<div class="error-wrap"><div class="error-box"><div class="error-title">Unable to load data</div><div class="error-msg">${msg}</div><button class="retry-btn" onclick="init()">↻ Retry</button></div></div>`;
 }
 
-// ── MAIN INIT ─────────────────────────────────────────────────
-function init() {
-  // Reset loaders
-  ['today-games','tomorrow-games'].forEach(id => {
-    document.getElementById(id).innerHTML = '<div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live predictions from Google Sheets...</div></div>';
+// ── Main init ─────────────────────────────────────────────────
+async function init() {
+  ['today-games','tomorrow-games'].forEach(id=>{
+    document.getElementById(id).innerHTML='<div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live data from Google Sheets...</div></div>';
   });
-  document.getElementById('rankings-content').innerHTML = '<div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live ELO ratings from Google Sheets...</div></div>';
+  document.getElementById('rankings-content').innerHTML='<div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live ELO ratings...</div></div>';
 
-  fetchData().then(data => {
-    // Header timestamp
+  try {
+    const data = await fetchJSONP(WEBAPP_URL);
+
+    // Timestamp
     const ts = new Date(data.generated);
     document.getElementById('last-updated').textContent =
-      'Updated: ' + ts.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) +
-      ' ' + ts.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+      'Updated: '+ts.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+
+      ' '+ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
 
-    // Split games
-    const todayGames    = data.games.filter(g => g.label === 'Today');
-    const tomorrowGames = data.games.filter(g => g.label === 'Tomorrow');
+    const todayGames    = data.games.filter(g=>g.label==='Today');
+    const tomorrowGames = data.games.filter(g=>g.label==='Tomorrow');
 
-    // Today
-    if (todayGames.length === 0) {
-      document.getElementById('today-games').innerHTML = '<div class="loading-wrap"><div class="loading-text">No games scheduled for today.</div></div>';
-    } else {
-      document.getElementById('today-subtitle').textContent =
-        ts.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' }) +
-        ' · ELO-based predictions · ' + todayGames.length + ' game' + (todayGames.length !== 1 ? 's' : '');
-      document.getElementById('today-games').innerHTML = todayGames.map((g, i) => renderGame(g, i)).join('');
+    // Helper to render a day's games with injuries
+    async function renderDayGames(games, containerID, subtitleID, dateLabel) {
+      if (games.length === 0) {
+        document.getElementById(subtitleID).textContent = dateLabel + ' · No games scheduled';
+        document.getElementById(containerID).innerHTML = '<div class="loading-wrap"><div class="loading-text">No games scheduled.</div></div>';
+        return;
+      }
+      document.getElementById(subtitleID).textContent = dateLabel + ' · ' + games.length + ' game' + (games.length!==1?'s':'');
+
+      // Fetch all injuries in parallel
+      const allAbbrs = [...new Set(games.flatMap(g=>[g.away,g.home]))];
+      await Promise.all(allAbbrs.map(a=>fetchInjuries(a)));
+
+      document.getElementById(containerID).innerHTML = games.map((g,i)=>
+        renderGame(g, i, injuryCache[g.away]||[], injuryCache[g.home]||[])
+      ).join('');
     }
 
-    // Tomorrow
-    if (tomorrowGames.length === 0) {
-      document.getElementById('tomorrow-games').innerHTML = '<div class="loading-wrap"><div class="loading-text">No games scheduled for tomorrow.</div></div>';
-    } else {
-      const tmrDate = new Date(ts); tmrDate.setDate(tmrDate.getDate() + 1);
-      document.getElementById('tomorrow-subtitle').textContent =
-        tmrDate.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' }) +
-        ' · ELO-based predictions · ' + tomorrowGames.length + ' game' + (tomorrowGames.length !== 1 ? 's' : '');
-      document.getElementById('tomorrow-games').innerHTML = tomorrowGames.map((g, i) => renderGame(g, i)).join('');
-    }
+    const todayLabel = ts.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    const tmrDate    = new Date(ts); tmrDate.setDate(tmrDate.getDate()+1);
+    const tmrLabel   = tmrDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+    await renderDayGames(todayGames,    'today-games',    'today-subtitle',    todayLabel);
+    await renderDayGames(tomorrowGames, 'tomorrow-games', 'tomorrow-subtitle', tmrLabel);
 
     // Rankings
-    const rankings = data.eloRankings;
     document.getElementById('rankings-subtitle').textContent =
-      '2026 Season · Updated through ' + ts.toLocaleDateString('en-US', { month:'long', day:'numeric' }) + ' results';
-    renderRankings(rankings);
+      '2026 Season · Updated through '+ts.toLocaleDateString('en-US',{month:'long',day:'numeric'})+' results';
+    renderRankings(data.eloRankings);
 
-  }).catch(err => {
-    const msg = err.message || 'Unknown error';
+  } catch(err) {
+    const msg = err.message||'Unknown error';
     showError('today-games', msg);
     showError('tomorrow-games', msg);
     showError('rankings-content', msg);
     document.getElementById('last-updated').textContent = 'Failed to load';
-  });
+  }
 }
 
-// ── TAB SWITCHING ─────────────────────────────────────────────
 function switchTab(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
   document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
 }
 
-// Kick off on load
 init();
 </script>
 </body>
