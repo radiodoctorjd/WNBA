@@ -351,7 +351,7 @@ function renderGame(g, idx) {
         <div class="team-elo-label">ELO ${g.awayElo || ''}</div>
         <div class="team-winprob ${!hFav ? 'favored' : 'underdog'}">${aProb}% win prob</div>
         <div class="team-meta">
-          ${g.awayRecord ? `<div class="team-record">${g.awayRecord}</div>` : ''}
+          ${g.awayRecord ? `<div class="team-record">${g.awayRecord} <span style="color:#444;font-weight:500">${g.awayRoadRec ? '· '+g.awayRoadRec+' road' : ''}</span></div>` : ''}
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;">
             ${renderStreak(g.awayStreak)}
             ${g.awayB2B ? `<span class="b2b-badge">B2B</span>` : ''}
@@ -375,7 +375,7 @@ function renderGame(g, idx) {
         <div class="team-elo-label">ELO ${g.homeElo || ''}</div>
         <div class="team-winprob ${hFav ? 'favored' : 'underdog'}">${hProb}% win prob</div>
         <div class="team-meta" style="align-items:flex-end">
-          ${g.homeRecord ? `<div class="team-record">${g.homeRecord}</div>` : ''}
+          ${g.homeRecord ? `<div class="team-record">${g.homeRecord} <span style="color:#444;font-weight:500">${g.homeHomeRec ? '· '+g.homeHomeRec+' home' : ''}</span></div>` : ''}
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;justify-content:flex-end;">
             ${renderStreak(g.homeStreak)}
             ${g.homeB2B ? `<span class="b2b-badge">B2B</span>` : ''}
