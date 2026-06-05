@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WNBA Prediction Model</title>
 <style>
-/* ── Reset & Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #0d0d0d; color: #e8e8e8; font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
-a { color: inherit; text-decoration: none; }
 
 /* ── Header ── */
 .header { background: #111; border-bottom: 1px solid #222; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
@@ -16,22 +14,21 @@ a { color: inherit; text-decoration: none; }
 .logo span { color: #ff4b4b; }
 .last-updated { font-size: 11px; color: #555; }
 
-/* ── Nav Tabs ── */
-.nav { background: #111; border-bottom: 1px solid #1e1e1e; padding: 0 24px; display: flex; gap: 0; }
+/* ── Nav ── */
+.nav { background: #111; border-bottom: 1px solid #1e1e1e; padding: 0 24px; display: flex; }
 .tab { padding: 14px 20px; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #555; cursor: pointer; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; }
 .tab:hover { color: #999; }
 .tab.active { color: #fff; border-bottom-color: #ff4b4b; }
 
-/* ── Main Layout ── */
+/* ── Layout ── */
 .main { max-width: 700px; margin: 0 auto; padding: 24px 16px 60px; }
 .section { display: none; }
 .section.active { display: block; }
-.section-header { margin-bottom: 20px; }
 .section-title { font-size: 22px; font-weight: 800; color: #fff; }
-.section-subtitle { font-size: 13px; color: #555; margin-top: 4px; }
+.section-subtitle { font-size: 13px; color: #555; margin-top: 4px; margin-bottom: 20px; }
 
 /* ── Loading / Error ── */
-.loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 14px; color: #444; }
+.loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 14px; }
 .spinner { width: 32px; height: 32px; border: 3px solid #222; border-top-color: #ff4b4b; border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { font-size: 13px; color: #555; }
@@ -53,12 +50,12 @@ a { color: inherit; text-decoration: none; }
 .team-abbr { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #fff; line-height: 1; }
 .team-abbr.favored { color: #ff4b4b; }
 .team-fullname { font-size: 11px; color: #555; margin-top: 2px; }
-.team-elo { font-size: 11px; color: #444; margin-top: 1px; }
+.team-elo-label { font-size: 11px; color: #444; margin-top: 1px; }
 .team-winprob { font-size: 13px; font-weight: 700; margin-top: 6px; }
 .team-winprob.favored { color: #ff4b4b; }
 .team-winprob.underdog { color: #666; }
 
-/* ── Team Meta Row (record, streak, back-to-back) ── */
+/* ── Team Meta (record, streak, b2b, form) ── */
 .team-meta { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
 .team-record { font-size: 11px; color: #666; font-weight: 600; }
 .streak-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.5px; }
@@ -67,26 +64,24 @@ a { color: inherit; text-decoration: none; }
 .b2b-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: #2a1f00; color: #f0a500; letter-spacing: 0.5px; text-transform: uppercase; }
 
 /* ── Form Sparkline ── */
-.form-sparkline { display: flex; gap: 3px; align-items: center; margin-top: 5px; }
+.form-sparkline { display: flex; gap: 3px; align-items: center; margin-top: 4px; }
 .spark-dot { width: 10px; height: 10px; border-radius: 50%; }
 .spark-W { background: #3ddc84; }
 .spark-L { background: #ff4b4b; }
 
-/* ── Win Bar ── */
+/* ── Matchup center ── */
 .matchup-center { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .win-badge { font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 4px; letter-spacing: 1px; text-transform: uppercase; }
 .conf-LOW  { background: #1e1e1e; color: #888; }
 .conf-MED  { background: #1a1a2e; color: #6b8cff; }
 .conf-HIGH { background: #1a2d1a; color: #3ddc84; }
 .win-label { font-size: 9px; font-weight: 800; color: #fff; letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px; background: #ff4b4b; border-radius: 4px; }
-
-/* ── H2H Badge ── */
 .h2h-badge { font-size: 10px; color: #666; font-weight: 600; margin-top: 2px; text-align: center; }
 
 /* ── Win Prob Bar ── */
 .prob-bar-wrap { margin: 0 16px 16px; }
 .prob-bar { height: 4px; background: #222; border-radius: 2px; overflow: hidden; }
-.prob-fill { height: 100%; background: #ff4b4b; border-radius: 2px; transition: width .6s ease; }
+.prob-fill { height: 100%; background: #ff4b4b; border-radius: 2px; }
 .prob-labels { display: flex; justify-content: space-between; margin-top: 4px; font-size: 11px; color: #444; }
 
 /* ── Stats Grid ── */
@@ -96,21 +91,24 @@ a { color: inherit; text-decoration: none; }
 .stat-value { font-size: 16px; font-weight: 800; color: #fff; }
 .stat-sub { font-size: 10px; color: #555; margin-top: 2px; }
 
-/* ── Pace Indicator ── */
-.pace-row { background: #111; border-top: 1px solid #1a1a1a; padding: 9px 16px; display: flex; align-items: center; gap: 10px; }
-.pace-label { font-size: 10px; color: #444; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
-.pace-bar-outer { flex: 1; height: 6px; background: #1e1e1e; border-radius: 3px; overflow: hidden; position: relative; }
-.pace-bar-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+/* ── Pace Row (two teams) ── */
+.pace-section { border-top: 1px solid #1a1a1a; background: #111; padding: 10px 16px; }
+.pace-title { font-size: 10px; color: #444; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.pace-team-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+.pace-team-row:last-child { margin-bottom: 0; }
+.pace-abbr-label { font-size: 10px; font-weight: 800; color: #666; width: 36px; flex-shrink: 0; }
+.pace-bar-outer { flex: 1; height: 5px; background: #1e1e1e; border-radius: 3px; overflow: hidden; }
+.pace-bar-fill { height: 100%; border-radius: 3px; }
 .pace-slow { background: linear-gradient(90deg, #2255cc, #4488ff); }
 .pace-med  { background: linear-gradient(90deg, #cc7722, #ffaa44); }
 .pace-fast { background: linear-gradient(90deg, #cc2222, #ff5555); }
-.pace-value { font-size: 11px; color: #666; font-weight: 700; white-space: nowrap; }
-.pace-tag { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px; }
+.pace-value { font-size: 11px; color: #666; font-weight: 700; width: 36px; text-align: right; flex-shrink: 0; }
+.pace-tag { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px; white-space: nowrap; }
 .pace-tag-slow { background: #0a1a3a; color: #4488ff; }
 .pace-tag-med  { background: #2a1a00; color: #ffaa44; }
 .pace-tag-fast { background: #2d0a0a; color: #ff5555; }
 
-/* ── 1H Predictions ── */
+/* ── 1H Section ── */
 .h1-header { padding: 10px 14px 6px; font-size: 10px; font-weight: 800; color: #555; letter-spacing: 1.5px; text-transform: uppercase; border-top: 1px solid #1a1a1a; background: #111; }
 .h1-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #1a1a1a; }
 .h1-cell { background: #141414; padding: 10px 14px; }
@@ -119,7 +117,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Injury Report ── */
 .injury-toggle { padding: 10px 16px; display: flex; align-items: center; gap: 6px; cursor: pointer; border-top: 1px solid #1a1a1a; background: #111; user-select: none; }
-.injury-dot { width: 6px; height: 6px; border-radius: 50%; background: #ff4b4b; }
+.injury-dot { width: 6px; height: 6px; border-radius: 50%; background: #ff4b4b; flex-shrink: 0; }
 .injury-toggle-label { font-size: 10px; font-weight: 800; color: #555; letter-spacing: 1.5px; text-transform: uppercase; }
 .injury-toggle-arrow { margin-left: auto; font-size: 10px; color: #444; transition: transform .2s; }
 .injury-toggle-arrow.open { transform: rotate(180deg); }
@@ -129,25 +127,35 @@ a { color: inherit; text-decoration: none; }
 .injury-team-label { font-size: 10px; font-weight: 800; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
 .injury-player { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
 .injury-status { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; white-space: nowrap; margin-top: 1px; }
-.status-Out        { background: #2d0f0f; color: #ff6b6b; }
-.status-DTD        { background: #2a1f00; color: #f0a500; }
-.status-Doubtful   { background: #2a1500; color: #f08c00; }
-.status-Questionable { background: #1a1a00; color: #d4d400; }
-.injury-name { font-size: 12px; color: #ccc; font-weight: 600; }
+.status-Out         { background: #2d0f0f; color: #ff6b6b; }
+.status-DTD         { background: #2a1f00; color: #f0a500; }
+.status-Doubtful    { background: #2a1500; color: #f08c00; }
+.status-Questionable{ background: #1a1a00; color: #d4d400; }
+.injury-name   { font-size: 12px; color: #ccc; font-weight: 600; }
 .injury-detail { font-size: 10px; color: #555; margin-top: 1px; }
-.no-injuries { font-size: 11px; color: #444; font-style: italic; }
+.no-injuries   { font-size: 11px; color: #444; font-style: italic; }
 
 /* ── ELO Rankings ── */
+.rankings-wrap { background: #151515; border: 1px solid #1e1e1e; border-radius: 12px; overflow: hidden; }
+.rankings-chart-wrap { padding: 20px 16px 0; }
+.rankings-chart-title { font-size: 11px; font-weight: 700; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+.elo-chart-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.elo-chart-rank { font-size: 10px; color: #444; font-weight: 700; width: 18px; text-align: right; flex-shrink: 0; }
+.elo-chart-abbr { font-size: 11px; font-weight: 800; width: 30px; flex-shrink: 0; }
+.elo-chart-bar-outer { flex: 1; height: 16px; background: #1a1a1a; border-radius: 3px; overflow: hidden; position: relative; }
+.elo-chart-bar-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; transition: width .8s ease; }
+.elo-chart-val { font-size: 9px; font-weight: 800; color: rgba(255,255,255,0.8); white-space: nowrap; }
+.elo-chart-record { font-size: 10px; color: #444; width: 36px; text-align: right; flex-shrink: 0; }
+.rankings-divider { height: 1px; background: #1a1a1a; margin: 16px 0 0; }
 .rankings-table { width: 100%; border-collapse: collapse; }
-.rankings-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #555; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #1e1e1e; }
-.rankings-table td { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; font-size: 13px; }
+.rankings-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #555; text-transform: uppercase; padding: 10px 14px; border-bottom: 1px solid #1e1e1e; }
+.rankings-table td { padding: 10px 14px; border-bottom: 1px solid #1a1a1a; font-size: 13px; }
 .rankings-table tr:last-child td { border-bottom: none; }
-.rank-num { color: #555; font-weight: 800; font-size: 14px; width: 32px; }
+.rank-num  { color: #555; font-weight: 800; font-size: 14px; }
 .rank-team { font-weight: 700; color: #fff; }
 .rank-conf { font-size: 10px; color: #555; margin-top: 2px; }
 .rank-elo-val { font-weight: 800; font-size: 14px; }
-.elo-bar-outer { height: 4px; background: #1e1e1e; border-radius: 2px; margin-top: 4px; width: 100%; }
-.elo-bar-fill { height: 4px; background: #ff4b4b; border-radius: 2px; }
+.rank-streak { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; display: inline-block; }
 </style>
 </head>
 <body>
@@ -164,30 +172,21 @@ a { color: inherit; text-decoration: none; }
 </nav>
 
 <main class="main">
-  <!-- TODAY -->
   <div class="section active" id="tab-today">
-    <div class="section-header">
-      <div class="section-title">Today's Games</div>
-      <div class="section-subtitle" id="today-subtitle">Loading…</div>
-    </div>
+    <div class="section-title">Today's Games</div>
+    <div class="section-subtitle" id="today-subtitle">Loading…</div>
     <div id="today-games"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Loading predictions…</div></div></div>
   </div>
 
-  <!-- TOMORROW -->
   <div class="section" id="tab-tomorrow">
-    <div class="section-header">
-      <div class="section-title">Tomorrow's Games</div>
-      <div class="section-subtitle" id="tomorrow-subtitle">Loading…</div>
-    </div>
+    <div class="section-title">Tomorrow's Games</div>
+    <div class="section-subtitle" id="tomorrow-subtitle">Loading…</div>
     <div id="tomorrow-games"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Loading predictions…</div></div></div>
   </div>
 
-  <!-- RANKINGS -->
   <div class="section" id="tab-rankings">
-    <div class="section-header">
-      <div class="section-title">ELO Power Rankings</div>
-      <div class="section-subtitle" id="rankings-subtitle">Loading…</div>
-    </div>
+    <div class="section-title">ELO Power Rankings</div>
+    <div class="section-subtitle" id="rankings-subtitle">Loading…</div>
     <div id="rankings-content"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Loading rankings…</div></div></div>
   </div>
 </main>
@@ -197,10 +196,8 @@ a { color: inherit; text-decoration: none; }
 </footer>
 
 <script>
-// ── Apps Script endpoint ──────────────────────────────────────
 const DATA_URL = 'https://script.google.com/macros/s/AKfycbyI_ZAQwD6x2EKsVJwEsRnckquGqNsDnnPsTZdGM_FzPgIey-lsK204JEWahHycJnc/exec';
 
-// ── Team logos ────────────────────────────────────────────────
 const TEAM_LOGOS = {
   ATL:'https://a.espncdn.com/i/teamlogos/wnba/500/atl.png',
   CHI:'https://a.espncdn.com/i/teamlogos/wnba/500/chi.png',
@@ -208,9 +205,9 @@ const TEAM_LOGOS = {
   DAL:'https://a.espncdn.com/i/teamlogos/wnba/500/dal.png',
   IND:'https://a.espncdn.com/i/teamlogos/wnba/500/ind.png',
   LAS:'https://a.espncdn.com/i/teamlogos/wnba/500/la.png',
-  LV: 'https://a.espncdn.com/i/teamlogos/wnba/500/lv.png',
+  LVA:'https://a.espncdn.com/i/teamlogos/wnba/500/lv.png',
   MIN:'https://a.espncdn.com/i/teamlogos/wnba/500/min.png',
-  NY: 'https://a.espncdn.com/i/teamlogos/wnba/500/ny.png',
+  NYL:'https://a.espncdn.com/i/teamlogos/wnba/500/ny.png',
   PHX:'https://a.espncdn.com/i/teamlogos/wnba/500/phx.png',
   PDX:'https://a.espncdn.com/i/teamlogos/wnba/500/por.png',
   SEA:'https://a.espncdn.com/i/teamlogos/wnba/500/sea.png',
@@ -235,7 +232,7 @@ function statusClass(s) {
   return 'status-Out';
 }
 
-function renderInjuryCol(abbr, name, players) {
+function renderInjuryCol(name, players) {
   if (!players || players.length === 0) {
     return `<div><div class="injury-team-label">${name}</div><div class="no-injuries">No reported injuries</div></div>`;
   }
@@ -247,18 +244,15 @@ function renderInjuryCol(abbr, name, players) {
   return `<div><div class="injury-team-label">${name}</div>${rows}</div>`;
 }
 
-// ── Sparkline form dots ───────────────────────────────────────
 function renderSparkline(form) {
-  // form is a string like "WWLWL" or an array
   if (!form) return '';
-  const results = Array.isArray(form) ? form : String(form).split('');
+  const results = String(form).split('');
   const dots = results.slice(-5).map(r =>
     `<div class="spark-dot spark-${r === 'W' ? 'W' : 'L'}" title="${r === 'W' ? 'Win' : 'Loss'}"></div>`
   ).join('');
   return `<div class="form-sparkline">${dots}</div>`;
 }
 
-// ── Streak badge ──────────────────────────────────────────────
 function renderStreak(streak) {
   if (!streak) return '';
   const m = String(streak).match(/^([WL])(\d+)$/i);
@@ -267,72 +261,78 @@ function renderStreak(streak) {
   return `<span class="streak-badge streak-${type}">${type}${m[2]}</span>`;
 }
 
-// ── Pace bar ─────────────────────────────────────────────────
-function paceInfo(pace) {
-  if (!pace) return null;
+// Pace category for a single team's avg pts/game
+function paceCategory(pace) {
+  if (!pace || pace === 0) return null;
   const p = parseFloat(pace);
-  if (isNaN(p)) return null;
-  // WNBA pace: slow <78, med 78-83, fast >83 (possessions/40 min)
+  if (isNaN(p) || p === 0) return null;
+  // WNBA scoring pace: slow <78, avg 78-85, fast >85
   let cls, tag, pct;
-  if (p < 78)      { cls='slow'; tag='Slow'; pct = Math.max(20, (p - 70) / 15 * 100); }
-  else if (p < 83) { cls='med';  tag='Avg';  pct = 20 + (p - 78) / 5 * 60; }
-  else             { cls='fast'; tag='Fast'; pct = Math.min(98, 80 + (p - 83) / 5 * 18); }
-  return { cls, tag, pct: Math.min(98, pct), val: p.toFixed(1) };
+  if (p < 78)      { cls='slow'; tag='Slow'; pct = Math.max(15, (p - 65) / 20 * 50); }
+  else if (p < 85) { cls='med';  tag='Avg';  pct = 50 + (p - 78) / 7 * 30; }
+  else             { cls='fast'; tag='Fast'; pct = Math.min(97, 80 + (p - 85) / 8 * 17); }
+  return { cls, tag, pct: Math.min(97, pct), val: p.toFixed(1) };
 }
 
-// ── Main game card renderer ───────────────────────────────────
-function renderGame(g, idx) {
-  const hFav   = g.homeWinProb >= 50;
-  const sp     = g.spread;
-  const hSpr   = sp > 0 ? `-${sp}` : `+${Math.abs(sp)}`;
-  const aSpr   = sp > 0 ? `+${sp}` : `-${Math.abs(sp)}`;
-  const s1H    = g.spread1H;
-  const h1SprH = s1H < 0 ? `+${Math.abs(s1H)}` : `-${s1H}`;
-  const h1SprA = s1H > 0 ? `+${s1H}` : `-${Math.abs(s1H)}`;
-  const conf   = (g.confidence||'').toUpperCase();
+// ── Pace section — two rows, one per team ────────────────────
+function renderPace(g) {
+  const awayPi = paceCategory(g.awayPace);
+  const homePi = paceCategory(g.homePace);
+  if (!awayPi && !homePi) return '';
 
-  // Win prob
-  const hProb  = Math.round(g.homeWinProb);
-  const aProb  = 100 - hProb;
-
-  // H2H
-  const h2hHtml = g.h2h ? `<div class="h2h-badge">H2H: ${g.h2h}</div>` : '';
-
-  // Streak
-  const awayStreakHtml = renderStreak(g.awayStreak);
-  const homeStreakHtml = renderStreak(g.homeStreak);
-
-  // Back-to-back
-  const awayB2B = g.awayB2B ? `<span class="b2b-badge">B2B</span>` : '';
-  const homeB2B = g.homeB2B ? `<span class="b2b-badge">B2B</span>` : '';
-
-  // Sparklines
-  const awayForm = renderSparkline(g.awayForm);
-  const homeForm = renderSparkline(g.homeForm);
-
-  // Records
-  const awayRecord = g.awayRecord ? `<div class="team-record">${g.awayRecord}</div>` : '';
-  const homeRecord = g.homeRecord ? `<div class="team-record">${g.homeRecord}</div>` : '';
-
-  // Pace
-  let paceHtml = '';
-  const avgPace = g.avgPace || ((parseFloat(g.homePace)||0) + (parseFloat(g.awayPace)||0)) / 2;
-  const pi = paceInfo(avgPace);
-  if (pi) {
-    paceHtml = `
-      <div class="pace-row">
-        <div class="pace-label">Pace</div>
+  const row = (abbr, pi) => {
+    if (!pi) return '';
+    return `
+      <div class="pace-team-row">
+        <div class="pace-abbr-label">${abbr}</div>
         <div class="pace-bar-outer">
           <div class="pace-bar-fill pace-${pi.cls}" style="width:${pi.pct}%"></div>
         </div>
         <div class="pace-value">${pi.val}</div>
         <span class="pace-tag pace-tag-${pi.cls}">${pi.tag}</span>
       </div>`;
-  }
+  };
 
-  // Injury report
-  const awayInj = g.awayInjuries || [];
-  const homeInj = g.homeInjuries || [];
+  return `
+    <div class="pace-section">
+      <div class="pace-title">Pace (avg pts/game)</div>
+      ${row(g.away, awayPi)}
+      ${row(g.home, homePi)}
+    </div>`;
+}
+
+// ── Main game card ────────────────────────────────────────────
+function renderGame(g, idx) {
+  const hFav  = g.homeWinProb >= 50;
+  const hProb = Math.round(g.homeWinProb);
+  const aProb = 100 - hProb;
+  const conf  = (g.confidence || '').toUpperCase();
+
+  // Spread labels — g.spread is positive when home is favored
+  const sp     = g.spread;
+  const hSpr   = sp > 0 ? `-${Math.abs(sp)}` : `+${Math.abs(sp)}`;
+  const aSpr   = sp > 0 ? `+${Math.abs(sp)}` : `-${Math.abs(sp)}`;
+  const s1H    = g.spread1H;
+  const h1SprH = s1H > 0 ? `-${Math.abs(s1H)}` : `+${Math.abs(s1H)}`;
+  const h1SprA = s1H > 0 ? `+${Math.abs(s1H)}` : `-${Math.abs(s1H)}`;
+
+  // Field names from GS: fullTotal, homeScore, awayScore, winner
+  // 1H fields: h1Total, homeScore1H, awayScore1H, winner1H, confidence1H
+  //            homeH1Elo, awayH1Elo, homeWinProb1H, awayWinProb1H
+  const total     = g.fullTotal   || '—';
+  const homeTotal = g.homeScore   || '—';
+  const awayTotal = g.awayScore   || '—';
+  const total1H     = g.h1Total      || '—';
+  const homeTotal1H = g.homeScore1H  || '—';
+  const awayTotal1H = g.awayScore1H  || '—';
+  const winner1H    = g.winner1H     || '—';
+  const conf1H      = (g.confidence1H || '').toUpperCase();
+  const h1EloAway   = g.awayH1Elo    || '—';
+  const h1EloHome   = g.homeH1Elo    || '—';
+  const prob1HAway  = g.awayWinProb1H || '—';
+  const prob1HHome  = g.homeWinProb1H || '—';
+
+  const h2hHtml = g.h2h ? `<div class="h2h-badge">${g.h2h}</div>` : '';
   const injId   = `inj-${idx}`;
 
   return `
@@ -348,15 +348,15 @@ function renderGame(g, idx) {
         ${logoImg(g.away)}
         <div class="team-abbr${!hFav ? ' favored' : ''}">${g.away}</div>
         <div class="team-fullname">${g.awayName || ''}</div>
-        <div class="team-elo">ELO ${g.awayElo || ''}</div>
+        <div class="team-elo-label">ELO ${g.awayElo || ''}</div>
         <div class="team-winprob ${!hFav ? 'favored' : 'underdog'}">${aProb}% win prob</div>
         <div class="team-meta">
-          ${awayRecord}
+          ${g.awayRecord ? `<div class="team-record">${g.awayRecord}</div>` : ''}
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;">
-            ${awayStreakHtml}
-            ${awayB2B}
+            ${renderStreak(g.awayStreak)}
+            ${g.awayB2B ? `<span class="b2b-badge">B2B</span>` : ''}
           </div>
-          ${awayForm}
+          ${renderSparkline(g.awayForm)}
         </div>
       </div>
 
@@ -372,15 +372,15 @@ function renderGame(g, idx) {
         ${logoImg(g.home)}
         <div class="team-abbr${hFav ? ' favored' : ''}">${g.home}</div>
         <div class="team-fullname">${g.homeName || ''} <span style="font-size:9px;color:#444">[Home]</span></div>
-        <div class="team-elo">ELO ${g.homeElo || ''}</div>
+        <div class="team-elo-label">ELO ${g.homeElo || ''}</div>
         <div class="team-winprob ${hFav ? 'favored' : 'underdog'}">${hProb}% win prob</div>
         <div class="team-meta" style="align-items:flex-end">
-          ${homeRecord}
+          ${g.homeRecord ? `<div class="team-record">${g.homeRecord}</div>` : ''}
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;justify-content:flex-end;">
-            ${homeStreakHtml}
-            ${homeB2B}
+            ${renderStreak(g.homeStreak)}
+            ${g.homeB2B ? `<span class="b2b-badge">B2B</span>` : ''}
           </div>
-          ${homeForm}
+          ${renderSparkline(g.homeForm)}
         </div>
       </div>
     </div>
@@ -391,7 +391,7 @@ function renderGame(g, idx) {
       <div class="prob-labels"><span>${g.away} ${aProb}%</span><span>${hProb}% ${g.home}</span></div>
     </div>
 
-    <!-- Full-game stats -->
+    <!-- Full game stats -->
     <div class="stats-grid">
       <div class="stat-cell">
         <div class="stat-label">Full Game Winner</div>
@@ -400,46 +400,46 @@ function renderGame(g, idx) {
       </div>
       <div class="stat-cell">
         <div class="stat-label">Full Game O/U</div>
-        <div class="stat-value">${g.total || '—'}</div>
+        <div class="stat-value">${total}</div>
         <div class="stat-sub">Combined pts total</div>
       </div>
       <div class="stat-cell">
         <div class="stat-label">${g.away} Team Total</div>
-        <div class="stat-value">${g.awayTotal || '—'}</div>
+        <div class="stat-value">${awayTotal}</div>
         <div class="stat-sub">Spread ${aSpr}</div>
       </div>
       <div class="stat-cell">
         <div class="stat-label">${g.home} Team Total</div>
-        <div class="stat-value">${g.homeTotal || '—'}</div>
+        <div class="stat-value">${homeTotal}</div>
         <div class="stat-sub">Spread ${hSpr}</div>
       </div>
     </div>
 
-    <!-- Pace indicator -->
-    ${paceHtml}
+    <!-- Pace — two rows, one per team -->
+    ${renderPace(g)}
 
     <!-- 1H predictions -->
     <div class="h1-header">1st Half Predictions</div>
     <div class="h1-grid">
       <div class="h1-cell">
         <div class="stat-label">1H Winner</div>
-        <div class="h1-winner">${g.winner1H || '—'}</div>
-        <div class="h1-prob">${g.prob1HAway || '—'}% / ${g.prob1HHome || '—'}%</div>
-        ${g.conf1H ? `<span class="win-badge conf-${g.conf1H.toUpperCase()}" style="margin-top:4px;display:inline-block">${g.conf1H.toUpperCase()}</span>` : ''}
+        <div class="h1-winner">${winner1H}</div>
+        <div class="h1-prob">${prob1HAway}% / ${prob1HHome}%</div>
+        ${conf1H ? `<span class="win-badge conf-${conf1H}" style="margin-top:4px;display:inline-block">${conf1H}</span>` : ''}
       </div>
       <div class="h1-cell">
         <div class="stat-label">1H Over/Under</div>
-        <div class="stat-value">${g.total1H || '—'}</div>
-        <div class="stat-sub">H1ELO: ${g.h1EloAway||'—'} vs ${g.h1EloHome||'—'}</div>
+        <div class="stat-value">${total1H}</div>
+        <div class="stat-sub">H1ELO: ${h1EloAway} vs ${h1EloHome}</div>
       </div>
       <div class="h1-cell">
         <div class="stat-label">${g.away} 1H Total</div>
-        <div class="stat-value">${g.awayTotal1H || '—'}</div>
+        <div class="stat-value">${awayTotal1H}</div>
         <div class="stat-sub">Spread ${h1SprA}</div>
       </div>
       <div class="h1-cell">
         <div class="stat-label">${g.home} 1H Total</div>
-        <div class="stat-value">${g.homeTotal1H || '—'}</div>
+        <div class="stat-value">${homeTotal1H}</div>
         <div class="stat-sub">Spread ${h1SprH}</div>
       </div>
     </div>
@@ -452,74 +452,118 @@ function renderGame(g, idx) {
     </div>
     <div class="injury-body" id="${injId}">
       <div class="injury-cols">
-        ${renderInjuryCol(g.away, g.awayName || g.away, awayInj)}
-        ${renderInjuryCol(g.home, g.homeName || g.home, homeInj)}
+        ${renderInjuryCol(g.awayName || g.away, g.awayInjuries || [])}
+        ${renderInjuryCol(g.homeName || g.home, g.homeInjuries || [])}
       </div>
     </div>
   </div>`;
 }
 
-// ── Injury toggle ─────────────────────────────────────────────
 function toggleInjury(id) {
   const body  = document.getElementById(id);
   const arrow = document.getElementById(id + '-arrow');
   if (!body) return;
   body.classList.toggle('open');
-  arrow.classList.toggle('open');
+  if (arrow) arrow.classList.toggle('open');
 }
 
-// ── Rankings ──────────────────────────────────────────────────
+// ── ELO Rankings with bar chart ───────────────────────────────
 function renderRankings(rankings) {
   if (!rankings || !rankings.length) {
     document.getElementById('rankings-content').innerHTML = '<div class="loading-text">No rankings available.</div>';
     return;
   }
+
   const maxElo = Math.max(...rankings.map(r => r.elo));
-  const rows = rankings.map(r => {
-    const barPct = Math.round((r.elo / maxElo) * 100);
+  const minElo = Math.min(...rankings.map(r => r.elo));
+  const eloRange = maxElo - minElo || 1;
+
+  // Bar chart
+  const chartRows = rankings.map(r => {
+    // Scale bar: shortest bar = 30%, longest = 97%
+    const barPct = 30 + ((r.elo - minElo) / eloRange) * 67;
+    // Color: top 3 red, mid green, bottom grey
+    const barColor = r.rank <= 3
+      ? 'linear-gradient(90deg, #cc2222, #ff4b4b)'
+      : r.rank <= 8
+        ? 'linear-gradient(90deg, #1a6b3a, #3ddc84)'
+        : 'linear-gradient(90deg, #333, #555)';
+    const streakHtml = r.streak
+      ? `<span class="rank-streak streak-${r.streak[0]}">${r.streak}</span>`
+      : '';
+    return `
+      <div class="elo-chart-row">
+        <div class="elo-chart-rank">${r.rank}</div>
+        <div class="elo-chart-abbr" style="color:${r.rank<=3?'#ff4b4b':r.rank<=8?'#3ddc84':'#666'}">${r.abbr}</div>
+        <div class="elo-chart-bar-outer">
+          <div class="elo-chart-bar-fill" style="width:${barPct.toFixed(1)}%;background:${barColor}">
+            <span class="elo-chart-val">${r.elo}</span>
+          </div>
+        </div>
+        <div class="elo-chart-record">${r.record || ''}</div>
+        <div style="width:42px;flex-shrink:0;padding-left:6px">${streakHtml}</div>
+      </div>`;
+  }).join('');
+
+  // Table
+  const tableRows = rankings.map(r => {
+    const streakHtml = r.streak
+      ? `<span class="rank-streak streak-${r.streak[0]}">${r.streak}</span>`
+      : '—';
     return `<tr>
       <td><span class="rank-num">${r.rank}</span></td>
       <td>
         <div class="rank-team">${r.abbr}</div>
         <div class="rank-conf">${r.name || ''} · ${r.conf || ''}</div>
-        ${r.record ? `<div class="rank-conf">${r.record}</div>` : ''}
       </td>
-      <td>
-        <div class="rank-elo-val" style="color:${r.rank<=3?'#ff4b4b':r.rank<=8?'#fff':'#666'}">${r.elo}</div>
-        <div class="elo-bar-outer"><div class="elo-bar-fill" style="width:${barPct}%"></div></div>
+      <td style="text-align:center">
+        <span class="rank-elo-val" style="color:${r.rank<=3?'#ff4b4b':r.rank<=8?'#fff':'#666'}">${r.elo}</span>
       </td>
+      <td style="text-align:center;color:#555;font-size:12px">${r.h1Elo || '—'}</td>
+      <td style="text-align:center;font-size:12px;color:#888">${r.record || '—'}</td>
+      <td style="text-align:center">${streakHtml}</td>
     </tr>`;
   }).join('');
 
   document.getElementById('rankings-content').innerHTML = `
-    <table class="rankings-table">
-      <thead><tr><th>#</th><th>Team</th><th>ELO</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
-}
-
-// ── Show error ────────────────────────────────────────────────
-function showError(id, msg) {
-  document.getElementById(id).innerHTML = `
-    <div class="error-box">
-      ⚠ Could not load data<br><small>${msg}</small>
-      <br><button class="retry-btn" onclick="init()">↺ Retry</button>
+    <div class="rankings-wrap">
+      <div class="rankings-chart-wrap">
+        <div class="rankings-chart-title">ELO Rating — All Teams</div>
+        ${chartRows}
+      </div>
+      <div class="rankings-divider"></div>
+      <table class="rankings-table">
+        <thead><tr>
+          <th>#</th><th>Team</th><th style="text-align:center">ELO</th>
+          <th style="text-align:center">1H ELO</th>
+          <th style="text-align:center">Record</th>
+          <th style="text-align:center">Streak</th>
+        </tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
     </div>`;
 }
 
-// ── JSONP fetch ───────────────────────────────────────────────
+// ── Error ─────────────────────────────────────────────────────
+function showError(id, msg) {
+  document.getElementById(id).innerHTML = `
+    <div class="error-box">⚠ Could not load data<br><small>${msg}</small>
+    <br><button class="retry-btn" onclick="init()">↺ Retry</button></div>`;
+}
+
+// ── JSONP ─────────────────────────────────────────────────────
 function fetchJSONP(url) {
   return new Promise((resolve, reject) => {
     const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     const timeout = setTimeout(() => {
       delete window[cbName];
-      script.remove();
+      if (script.parentNode) script.remove();
       reject(new Error('Script load failed'));
     }, 15000);
     window[cbName] = (data) => {
       clearTimeout(timeout);
       delete window[cbName];
-      script.remove();
+      if (script.parentNode) script.remove();
       resolve(data);
     };
     const script = document.createElement('script');
@@ -533,21 +577,24 @@ function fetchJSONP(url) {
   });
 }
 
-// ── Render a day ──────────────────────────────────────────────
+// ── Render day ────────────────────────────────────────────────
 function renderDayGames(games, containerID, subtitleID, dateLabel) {
   if (!games || games.length === 0) {
     document.getElementById(subtitleID).textContent = dateLabel + ' · No games scheduled';
-    document.getElementById(containerID).innerHTML = '<div class="loading-wrap"><div class="loading-text">No games scheduled.</div></div>';
+    document.getElementById(containerID).innerHTML =
+      '<div class="loading-wrap"><div class="loading-text">No games scheduled.</div></div>';
     return;
   }
-  document.getElementById(subtitleID).textContent = dateLabel + ' · ' + games.length + ' game' + (games.length !== 1 ? 's' : '');
+  document.getElementById(subtitleID).textContent =
+    dateLabel + ' · ' + games.length + ' game' + (games.length !== 1 ? 's' : '');
   document.getElementById(containerID).innerHTML = games.map((g, i) => renderGame(g, i)).join('');
 }
 
 // ── Init ──────────────────────────────────────────────────────
 async function init() {
   ['today-games','tomorrow-games','rankings-content'].forEach(id => {
-    document.getElementById(id).innerHTML = '<div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Loading…</div></div>';
+    document.getElementById(id).innerHTML =
+      '<div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Loading…</div></div>';
   });
   document.getElementById('last-updated').textContent = 'Loading…';
 
@@ -558,19 +605,20 @@ async function init() {
       'Updated: ' + ts.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) +
       ' ' + ts.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
 
-    const allGames    = data.games || [];
-    const todayGames  = allGames.filter(g => g.isToday);
+    const allGames      = data.games || [];
+    const todayGames    = allGames.filter(g => g.isToday);
     const tomorrowGames = allGames.filter(g => !g.isToday);
 
-    const todayTs = ts.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
-    const tmrDate = new Date(ts); tmrDate.setDate(tmrDate.getDate() + 1);
-    const tmrTs   = tmrDate.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+    const todayLabel = ts.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+    const tmrDate    = new Date(ts); tmrDate.setDate(tmrDate.getDate() + 1);
+    const tmrLabel   = tmrDate.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
 
-    renderDayGames(todayGames,    'today-games',    'today-subtitle',    todayTs);
-    renderDayGames(tomorrowGames, 'tomorrow-games', 'tomorrow-subtitle', tmrTs);
+    renderDayGames(todayGames,    'today-games',    'today-subtitle',    todayLabel);
+    renderDayGames(tomorrowGames, 'tomorrow-games', 'tomorrow-subtitle', tmrLabel);
 
     document.getElementById('rankings-subtitle').textContent =
-      '2026 Season · Updated through ' + ts.toLocaleDateString('en-US', {month:'long', day:'numeric'}) + ' results';
+      '2026 Season · Updated through ' +
+      ts.toLocaleDateString('en-US', {month:'long', day:'numeric'}) + ' results';
     renderRankings(data.eloRankings);
 
   } catch(err) {
@@ -582,7 +630,6 @@ async function init() {
   }
 }
 
-// ── Tab switching ─────────────────────────────────────────────
 function switchTab(name) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
