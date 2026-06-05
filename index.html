@@ -235,7 +235,7 @@ function renderInjuryCol(name, players) {
   const rows = players.map(p => `
     <div class="injury-player">
       <span class="injury-status ${statusClass(p.status)}">${p.status}</span>
-      <div><div class="injury-name">${p.name}</div>${p.injury ? `<div class="injury-detail">${p.injury}</div>` : ''}</div>
+      <div><div class="injury-name">${p.name}</div>${p.injury ? '<div class="injury-detail">'+p.injury+'</div>' : ''}</div>
     </div>`).join('');
   return `<div><div class="injury-team-label">${name}</div>${rows}</div>`;
 }
@@ -321,7 +321,7 @@ function renderGame(g, idx) {
   const prob1HAway  = g.awayWinProb1H || '—';
   const prob1HHome  = g.homeWinProb1H || '—';
 
-  const h2hHtml = g.h2h ? `<div class="h2h-badge">${g.h2h}</div>` : '';
+  const h2hHtml = g.h2h ? '<div class="h2h-badge">'+g.h2h+'</div>' : '';
   const injId   = `inj-${idx}`;
 
   return `
@@ -340,10 +340,10 @@ function renderGame(g, idx) {
         <div class="team-elo-label">ELO ${g.awayElo || ''}</div>
         <div class="team-winprob ${!hFav ? 'favored' : 'underdog'}">${aProb}% win prob</div>
         <div class="team-meta">
-          ${g.awayRecord ? `<div class="team-record">${g.awayRecord} <span style="color:#444;font-weight:500">${g.awayRoadRec ? '· '+g.awayRoadRec+' road' : ''}</span></div>` : ''}
+          ${g.awayRecord ? '<div class="team-record">'+g.awayRecord+(g.awayRoadRec ? ' <span style="color:#555;font-size:10px">· '+g.awayRoadRec+' road</span>' : '')+'</div>' : ''}
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;">
             ${renderStreak(g.awayStreak)}
-            ${g.awayB2B ? `<span class="b2b-badge">B2B</span>` : ''}
+            ${g.awayB2B ? '<span class="b2b-badge">B2B</span>' : ''}
           </div>
         </div>
       </div>
@@ -363,10 +363,10 @@ function renderGame(g, idx) {
         <div class="team-elo-label">ELO ${g.homeElo || ''}</div>
         <div class="team-winprob ${hFav ? 'favored' : 'underdog'}">${hProb}% win prob</div>
         <div class="team-meta" style="align-items:flex-end">
-          ${g.homeRecord ? `<div class="team-record">${g.homeRecord} <span style="color:#444;font-weight:500">${g.homeHomeRec ? '· '+g.homeHomeRec+' home' : ''}</span></div>` : ''}
+          ${g.homeRecord ? '<div class="team-record">'+g.homeRecord+(g.homeHomeRec ? ' <span style="color:#555;font-size:10px">· '+g.homeHomeRec+' home</span>' : '')+'</div>' : ''}
           <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;justify-content:flex-end;">
             ${renderStreak(g.homeStreak)}
-            ${g.homeB2B ? `<span class="b2b-badge">B2B</span>` : ''}
+            ${g.homeB2B ? '<span class="b2b-badge">B2B</span>' : ''}
           </div>
         </div>
       </div>
@@ -412,7 +412,7 @@ function renderGame(g, idx) {
         <div class="stat-label">1H Winner</div>
         <div class="h1-winner">${winner1H}</div>
         <div class="h1-prob">${prob1HAway}% / ${prob1HHome}%</div>
-        ${conf1H ? `<span class="win-badge conf-${conf1H}" style="margin-top:4px;display:inline-block">${conf1H}</span>` : ''}
+        ${conf1H ? '<span class="win-badge conf-'+conf1H+'" style="margin-top:4px;display:inline-block">'+conf1H+'</span>' : ''}
       </div>
       <div class="h1-cell">
         <div class="stat-label">1H Over/Under</div>
