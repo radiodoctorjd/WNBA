@@ -186,26 +186,20 @@
   .rec-home{color:var(--teal);}
   .rec-away{color:var(--orange);}
 
-  /* Pace + ATS row */
-  .pace-ats-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  /* PPG / PAPG / ATS row */
+  .pace-ats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
   .pace-block{background:var(--surface2);border-radius:8px;padding:10px 12px;}
   .pace-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:6px;}
   .pace-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;line-height:1;color:#00b4d8;}
-  .pace-sub{font-size:10px;color:var(--text-dim);margin-top:3px;}
-  .pace-bar-bg{height:3px;background:var(--surface3);border-radius:2px;margin-top:8px;}
-  .pace-bar-fill{height:100%;border-radius:2px;background:#00b4d8;}
+  .pace-sub{font-size:10px;color:var(--text-dim);margin-top:4px;}
 
   .ats-block{background:var(--surface2);border-radius:8px;padding:10px 12px;}
   .ats-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:6px;}
-  .ats-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;line-height:1;}
+  .ats-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;line-height:1;}
   .ats-val.ats-pos{color:var(--teal);}
   .ats-val.ats-neg{color:var(--red);}
   .ats-val.ats-neu{color:var(--text-mid);}
-  .ats-sub{font-size:10px;color:var(--text-dim);margin-top:3px;}
-  .ats-mini-bar{display:flex;height:4px;border-radius:2px;overflow:hidden;margin-top:8px;gap:1px;}
-  .ats-seg-c{background:var(--teal);}
-  .ats-seg-l{background:var(--red);}
-  .ats-seg-p{background:var(--text-dim);}
+  .ats-sub{font-size:10px;color:var(--text-dim);margin-top:4px;}
 
   /* Sort controls */
   .sort-bar{display:flex;align-items:center;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
@@ -678,13 +672,10 @@ function applyTeamStatsView() {
     return 0;
   });
 
-  const minPace = Math.min(...data.filter(r => r.ppg).map(r => r.ppg));
-  const maxPace = Math.max(...data.filter(r => r.ppg).map(r => r.ppg));
-
-  document.getElementById('teamstats-grid').innerHTML = data.map((r, i) => renderTeamCard(r, i, minPace, maxPace)).join('');
+  document.getElementById('teamstats-grid').innerHTML = data.map((r, i) => renderTeamCard(r, i)).join('');
 }
 
-function renderTeamCard(r, i, minPace, maxPace) {
+function renderTeamCard(r, i) {
   const eloCls = r.elo >= 1560 ? 'tsc-elo-elite' : r.elo >= 1500 ? 'tsc-elo-above' : 'tsc-elo-below';
   const wl  = r.record || (r.wins != null ? `${r.wins}-${r.losses}` : '—');
   const wpct = r.winPct != null ? (r.winPct * 100).toFixed(1) + '%' : '—';
@@ -696,33 +687,18 @@ function renderTeamCard(r, i, minPace, maxPace) {
   const aPct = (aw + al) > 0 ? ((aw / (aw + al)) * 100).toFixed(0) + '%' : '—';
   const pace = r.ppg != null ? r.ppg : null;
   const papg = r.papg != null ? r.papg : null;
-  const pacePct = pace != null && maxPace > minPace ? Math.round(((pace - minPace) / (maxPace - minPace)) * 100) : 50;
   const paceLabel = pace != null ? pace.toFixed(1) : '—';
-
-  // Pace tier label
-  let paceTier = '';
-  if (pace != null) {
-    if (pace >= maxPace - (maxPace - minPace) * 0.25) paceTier = 'Fast';
-    else if (pace <= minPace + (maxPace - minPace) * 0.25) paceTier = 'Slow';
-    else paceTier = 'Avg pace';
-  }
 
   // ATS
   const ats = r.ats || '—';
-  let atsParts = [0,0,0];
-  let atsTotal = 0;
   let atsLabel = '—';
   let atsCls = 'ats-neu';
   if (ats !== '—') {
-    atsParts = ats.split('-').map(Number);
-    atsTotal = atsParts.reduce((s,v) => s + (v||0), 0);
+    const atsParts = ats.split('-').map(Number);
     const diff = (atsParts[0]||0) - (atsParts[1]||0);
     atsCls = diff > 0 ? 'ats-pos' : diff < 0 ? 'ats-neg' : 'ats-neu';
     atsLabel = ats;
   }
-  const cW = atsTotal > 0 ? Math.round(((atsParts[0]||0)/atsTotal)*100) : 0;
-  const lW = atsTotal > 0 ? Math.round(((atsParts[1]||0)/atsTotal)*100) : 0;
-  const pW = atsTotal > 0 ? Math.round(((atsParts[2]||0)/atsTotal)*100) : 0;
 
   const logo = TEAM_LOGOS[r.abbr] ? `<img class="tsc-logo" src="${TEAM_LOGOS[r.abbr]}" alt="${r.abbr}" onerror="this.style.display='none'">` : '';
 
@@ -763,18 +739,17 @@ function renderTeamCard(r, i, minPace, maxPace) {
       <div class="pace-block">
         <div class="pace-label">Points Per Game</div>
         <div class="pace-val">${paceLabel}</div>
-        <div class="pace-sub">${paceTier} · season avg · PAPG: ${papg != null ? papg : '\u2014'}</div>
-        <div class="pace-bar-bg"><div class="pace-bar-fill" style="width:${pacePct}%"></div></div>
+        <div class="pace-sub">Season avg · offense</div>
+      </div>
+      <div class="pace-block">
+        <div class="pace-label">Pts Against/G</div>
+        <div class="pace-val" style="color:#ef476f">${papg != null ? papg : '—'}</div>
+        <div class="pace-sub">Season avg · defense</div>
       </div>
       <div class="ats-block">
         <div class="ats-label">ATS (Season)</div>
         <div class="ats-val ats-${atsCls}">${atsLabel}</div>
-        <div class="ats-sub">Against the spread · season</div>
-        <div class="ats-mini-bar">
-          <div class="ats-seg-c" style="flex:${cW}"></div>
-          <div class="ats-seg-l" style="flex:${lW}"></div>
-          <div class="ats-seg-p" style="flex:${Math.max(pW,1)}"></div>
-        </div>
+        <div class="ats-sub">Against the spread</div>
       </div>
     </div>
 
