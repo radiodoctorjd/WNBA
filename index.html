@@ -154,6 +154,74 @@
   .animate-in{animation:fadeUp .4s ease forwards;opacity:0;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
+  /* TEAM STATS TAB */
+  .stats-filters{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .filter-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text-mid);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.06em;cursor:pointer;transition:all .15s;}
+  .filter-btn.active,.filter-btn:hover{background:var(--orange-dim);color:var(--orange);border-color:rgba(255,107,53,.3);}
+  .conf-filter{margin-left:auto;}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+  .team-stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;}
+  .team-stat-card:hover{border-color:var(--border2);}
+  .tsc-header{background:var(--surface2);padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+  .tsc-logo{width:36px;height:36px;object-fit:contain;}
+  .tsc-name{flex:1;}
+  .tsc-abbr{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;letter-spacing:.04em;}
+  .tsc-full{font-size:11px;color:var(--text-dim);margin-top:1px;}
+  .tsc-rank{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);text-align:right;}
+  .tsc-elo-pill{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;}
+  .tsc-elo-elite{background:rgba(0,212,170,.15);color:var(--teal);}
+  .tsc-elo-above{background:rgba(255,209,102,.15);color:var(--yellow);}
+  .tsc-elo-below{background:rgba(239,71,111,.15);color:var(--red);}
+
+  .tsc-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+
+  /* Record row */
+  .rec-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .rec-block{background:var(--surface2);border-radius:8px;padding:10px 12px;text-align:center;}
+  .rec-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:4px;}
+  .rec-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;line-height:1;}
+  .rec-pct{font-size:10px;color:var(--text-dim);margin-top:2px;}
+  .rec-season{color:var(--text);}
+  .rec-home{color:var(--teal);}
+  .rec-away{color:var(--orange);}
+
+  /* Pace + ATS row */
+  .pace-ats-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .pace-block{background:var(--surface2);border-radius:8px;padding:10px 12px;}
+  .pace-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:6px;}
+  .pace-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;line-height:1;color:#00b4d8;}
+  .pace-sub{font-size:10px;color:var(--text-dim);margin-top:3px;}
+  .pace-bar-bg{height:3px;background:var(--surface3);border-radius:2px;margin-top:8px;}
+  .pace-bar-fill{height:100%;border-radius:2px;background:#00b4d8;}
+
+  .ats-block{background:var(--surface2);border-radius:8px;padding:10px 12px;}
+  .ats-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:6px;}
+  .ats-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;line-height:1;}
+  .ats-val.ats-pos{color:var(--teal);}
+  .ats-val.ats-neg{color:var(--red);}
+  .ats-val.ats-neu{color:var(--text-mid);}
+  .ats-sub{font-size:10px;color:var(--text-dim);margin-top:3px;}
+  .ats-mini-bar{display:flex;height:4px;border-radius:2px;overflow:hidden;margin-top:8px;gap:1px;}
+  .ats-seg-c{background:var(--teal);}
+  .ats-seg-l{background:var(--red);}
+  .ats-seg-p{background:var(--text-dim);}
+
+  /* Sort controls */
+  .sort-bar{display:flex;align-items:center;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
+  .sort-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;}
+  .sort-btn{padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-dim);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;transition:all .15s;}
+  .sort-btn.active{background:rgba(255,107,53,.1);color:var(--orange);border-color:rgba(255,107,53,.25);}
+  .sort-btn:hover:not(.active){color:var(--text);border-color:var(--border2);}
+
+  /* Enhanced ELO table new cols */
+  .elo-table th.new-col{color:rgba(0,212,170,.7);}
+  .pace-cell{font-family:'DM Mono',monospace;font-size:12px;color:#00b4d8;}
+  .ats-cell-pos{color:var(--teal);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
+  .ats-cell-neg{color:var(--red);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
+  .ats-cell-neu{color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;}
+  .split-rec{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-mid);}
+
   .footer{margin-top:4rem;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;}
 </style>
 </head>
@@ -171,6 +239,7 @@
   <button class="tab active" onclick="switchTab('today')">Today</button>
   <button class="tab" onclick="switchTab('tomorrow')">Tomorrow</button>
   <button class="tab" onclick="switchTab('rankings')">ELO Rankings</button>
+  <button class="tab" onclick="switchTab('teamstats')">Team Stats</button>
 </nav>
 
 <main class="main">
@@ -190,6 +259,22 @@
     <div class="section-title">ELO Power Rankings</div>
     <div class="section-subtitle" id="rankings-subtitle">Loading rankings...</div>
     <div id="rankings-content"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Fetching live ELO ratings from Google Sheets...</div></div></div>
+  </section>
+
+  <section class="section" id="tab-teamstats">
+    <div class="section-title">Team Stats</div>
+    <div class="section-subtitle" id="teamstats-subtitle">Season records · Pace · ATS last 5</div>
+    <div class="sort-bar">
+      <span class="sort-label">Sort by:</span>
+      <button class="sort-btn active" onclick="sortTeamStats('elo')">ELO</button>
+      <button class="sort-btn" onclick="sortTeamStats('record')">Record</button>
+      <button class="sort-btn" onclick="sortTeamStats('pace')">Pace L5</button>
+      <button class="sort-btn" onclick="sortTeamStats('ats')">ATS L5</button>
+      <button class="sort-btn conf-filter" onclick="filterConf('All')">All</button>
+      <button class="sort-btn" onclick="filterConf('East')">East</button>
+      <button class="sort-btn" onclick="filterConf('West')">West</button>
+    </div>
+    <div class="stats-grid" id="teamstats-grid"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Loading team stats...</div></div></div>
   </section>
 </main>
 
@@ -408,7 +493,7 @@ function renderRankings(rankings) {
     </div>
     <div class="table-wrap">
       <table class="elo-table">
-        <thead><tr><th>#</th><th></th><th>Team</th><th>Abbr</th><th>Conf</th><th>W-L</th><th>Win%</th><th>Full Game ELO</th><th>1H ELO</th></tr></thead>
+        <thead><tr><th>#</th><th></th><th>Team</th><th>Abbr</th><th>Conf</th><th>W-L</th><th>Win%</th><th>Full Game ELO</th><th>1H ELO</th><th class="new-col">Pace L5</th><th class="new-col">Home</th><th class="new-col">Away</th><th class="new-col">ATS L5</th></tr></thead>
         <tbody id="elo-tbody"></tbody>
       </table>
     </div>`;
@@ -439,6 +524,10 @@ function renderRankings(rankings) {
       <td style="font-size:13px;">${wpct}</td>
       <td><div class="elo-bar-wrap"><span class="elo-val ${ec}">${r.elo}</span><div class="elo-bar-bg"><div class="elo-bar-fill ${bc}" style="width:${bw}%"></div></div></div></td>
       <td><div class="elo-bar-wrap"><span class="elo-val ${h1ec}">${h1Elo}</span><div class="elo-bar-bg"><div class="elo-bar-fill ${h1bc}" style="width:${h1bw}%"></div></div></div></td>
+      <td><span class="pace-cell">${r.paceL5 != null ? r.paceL5 : '—'}</span></td>
+      <td><span class="split-rec">${r.homeW != null ? r.homeW+'-'+r.homeL : '—'}</span></td>
+      <td><span class="split-rec">${r.awayW != null ? r.awayW+'-'+r.awayL : '—'}</span></td>
+      <td><span class="${atsClass(r.atsL5)}">${r.atsL5 || '—'}</span></td>
     </tr>`;
   });
 
@@ -510,11 +599,17 @@ async function init() {
       '2026 Season · Updated through '+ts.toLocaleDateString('en-US',{month:'long',day:'numeric'})+' results';
     renderRankings(data.eloRankings);
 
+    // Team Stats tab
+    document.getElementById('teamstats-subtitle').textContent =
+      '2026 Season · ' + data.eloRankings.length + ' teams · Pace, records & ATS L5';
+    renderTeamStats(data.eloRankings);
+
   } catch(err) {
     const msg = err.message||'Unknown error';
     showError('today-games', msg);
     showError('tomorrow-games', msg);
     showError('rankings-content', msg);
+    showError('teamstats-grid', msg);
     document.getElementById('last-updated').textContent = 'Failed to load';
   }
 }
@@ -524,6 +619,165 @@ function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
+}
+
+// ── ATS cell class helper ─────────────────────────────────────
+function atsClass(atsStr) {
+  if (!atsStr || atsStr === '—') return 'ats-cell-neu';
+  const parts = atsStr.split('-').map(Number);
+  const covers = parts[0] || 0, losses = parts[1] || 0;
+  if (covers > losses) return 'ats-cell-pos';
+  if (losses > covers) return 'ats-cell-neg';
+  return 'ats-cell-neu';
+}
+
+// ── Team Stats tab ────────────────────────────────────────────
+let _allTeamStats = [];
+let _tsSort = 'elo';
+let _tsConf = 'All';
+
+function renderTeamStats(rankings) {
+  _allTeamStats = rankings;
+  applyTeamStatsView();
+}
+
+function sortTeamStats(key) {
+  _tsSort = key;
+  document.querySelectorAll('.sort-btn').forEach(b => {
+    if (['elo','record','pace','ats'].includes(b.textContent.toLowerCase().replace(' l5',''))) {
+      b.classList.toggle('active', b.textContent.toLowerCase().includes(key));
+    }
+  });
+  applyTeamStatsView();
+}
+
+function filterConf(conf) {
+  _tsConf = conf;
+  applyTeamStatsView();
+}
+
+function applyTeamStatsView() {
+  let data = _allTeamStats.slice();
+
+  // Filter by conference
+  if (_tsConf !== 'All') data = data.filter(r => r.conf === _tsConf);
+
+  // Sort
+  data.sort((a, b) => {
+    if (_tsSort === 'elo')    return b.elo - a.elo;
+    if (_tsSort === 'record') return (b.winPct || 0) - (a.winPct || 0);
+    if (_tsSort === 'pace')   return (b.paceL5 || 0) - (a.paceL5 || 0);
+    if (_tsSort === 'ats') {
+      const ac = (a.atsL5 || '0-0').split('-').map(Number);
+      const bc = (b.atsL5 || '0-0').split('-').map(Number);
+      const aDiff = (ac[0]||0) - (ac[1]||0);
+      const bDiff = (bc[0]||0) - (bc[1]||0);
+      return bDiff - aDiff;
+    }
+    return 0;
+  });
+
+  const minPace = Math.min(...data.filter(r => r.paceL5).map(r => r.paceL5));
+  const maxPace = Math.max(...data.filter(r => r.paceL5).map(r => r.paceL5));
+
+  document.getElementById('teamstats-grid').innerHTML = data.map((r, i) => renderTeamCard(r, i, minPace, maxPace)).join('');
+}
+
+function renderTeamCard(r, i, minPace, maxPace) {
+  const eloCls = r.elo >= 1560 ? 'tsc-elo-elite' : r.elo >= 1500 ? 'tsc-elo-above' : 'tsc-elo-below';
+  const wl  = r.record || (r.wins != null ? `${r.wins}-${r.losses}` : '—');
+  const wpct = r.winPct != null ? (r.winPct * 100).toFixed(1) + '%' : '—';
+  const hw   = r.homeW != null ? r.homeW : '?';
+  const hl   = r.homeL != null ? r.homeL : '?';
+  const aw   = r.awayW != null ? r.awayW : '?';
+  const al   = r.awayL != null ? r.awayL : '?';
+  const hPct = (hw + hl) > 0 ? ((hw / (hw + hl)) * 100).toFixed(0) + '%' : '—';
+  const aPct = (aw + al) > 0 ? ((aw / (aw + al)) * 100).toFixed(0) + '%' : '—';
+  const pace = r.paceL5 != null ? r.paceL5 : null;
+  const pacePct = pace != null && maxPace > minPace ? Math.round(((pace - minPace) / (maxPace - minPace)) * 100) : 50;
+  const paceLabel = pace != null ? pace.toFixed(1) : '—';
+
+  // Pace tier label
+  let paceTier = '';
+  if (pace != null) {
+    if (pace >= maxPace - (maxPace - minPace) * 0.25) paceTier = 'Fast';
+    else if (pace <= minPace + (maxPace - minPace) * 0.25) paceTier = 'Slow';
+    else paceTier = 'Avg pace';
+  }
+
+  // ATS
+  const ats = r.atsL5 || '—';
+  let atsParts = [0,0,0];
+  let atsTotal = 0;
+  let atsLabel = '—';
+  let atsCls = 'ats-neu';
+  if (ats !== '—') {
+    atsParts = ats.split('-').map(Number);
+    atsTotal = atsParts.reduce((s,v) => s + (v||0), 0);
+    const diff = (atsParts[0]||0) - (atsParts[1]||0);
+    atsCls = diff > 0 ? 'ats-pos' : diff < 0 ? 'ats-neg' : 'ats-neu';
+    atsLabel = ats;
+  }
+  const cW = atsTotal > 0 ? Math.round(((atsParts[0]||0)/atsTotal)*100) : 0;
+  const lW = atsTotal > 0 ? Math.round(((atsParts[1]||0)/atsTotal)*100) : 0;
+  const pW = atsTotal > 0 ? Math.round(((atsParts[2]||0)/atsTotal)*100) : 0;
+
+  const logo = TEAM_LOGOS[r.abbr] ? `<img class="tsc-logo" src="${TEAM_LOGOS[r.abbr]}" alt="${r.abbr}" onerror="this.style.display='none'">` : '';
+
+  return `
+<div class="team-stat-card animate-in" style="animation-delay:${i * 0.04}s" data-conf="${r.conf}">
+  <div class="tsc-header">
+    ${logo}
+    <div class="tsc-name">
+      <div class="tsc-abbr">${r.abbr}</div>
+      <div class="tsc-full">${r.name}</div>
+    </div>
+    <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+      <span class="tsc-elo-pill ${eloCls}">ELO ${r.elo}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);">${r.conf} · #${i + 1}</span>
+    </div>
+  </div>
+  <div class="tsc-body">
+
+    <div class="rec-row">
+      <div class="rec-block">
+        <div class="rec-label">Season</div>
+        <div class="rec-val rec-season">${wl}</div>
+        <div class="rec-pct">${wpct} win rate</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Home</div>
+        <div class="rec-val rec-home">${hw}-${hl}</div>
+        <div class="rec-pct">${hPct} at home</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Away</div>
+        <div class="rec-val rec-away">${aw}-${al}</div>
+        <div class="rec-pct">${aPct} on road</div>
+      </div>
+    </div>
+
+    <div class="pace-ats-row">
+      <div class="pace-block">
+        <div class="pace-label">Pace L5 · pts/gm</div>
+        <div class="pace-val">${paceLabel}</div>
+        <div class="pace-sub">${paceTier} · combined pts last 5</div>
+        <div class="pace-bar-bg"><div class="pace-bar-fill" style="width:${pacePct}%"></div></div>
+      </div>
+      <div class="ats-block">
+        <div class="ats-label">ATS Last 5</div>
+        <div class="ats-val ats-${atsCls}">${atsLabel}</div>
+        <div class="ats-sub">Covers · Losses · Pushes</div>
+        <div class="ats-mini-bar">
+          <div class="ats-seg-c" style="flex:${cW}"></div>
+          <div class="ats-seg-l" style="flex:${lW}"></div>
+          <div class="ats-seg-p" style="flex:${Math.max(pW,1)}"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>`;
 }
 
 init();
