@@ -188,12 +188,12 @@
 
   /* PPG / PAPG / ATS row */
   .pace-ats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-  .pace-block{background:var(--surface2);border-radius:8px;padding:10px 12px;}
+  .pace-block{background:var(--surface2);border-radius:8px;padding:10px 12px;text-align:center;}
   .pace-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:6px;}
   .pace-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;line-height:1;color:#00b4d8;}
   .pace-sub{font-size:10px;color:var(--text-dim);margin-top:4px;}
 
-  .ats-block{background:var(--surface2);border-radius:8px;padding:10px 12px;}
+  .ats-block{background:var(--surface2);border-radius:8px;padding:10px 12px;text-align:center;}
   .ats-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);margin-bottom:6px;}
   .ats-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;line-height:1;}
   .ats-val.ats-pos{color:var(--teal);}
@@ -215,6 +215,11 @@
   .ats-cell-neg{color:var(--red);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
   .ats-cell-neu{color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;}
   .split-rec{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-mid);}
+
+  .team-record-row{display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:6px;}
+  .team-rec-badge{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);}
+  .team-rec-ctx{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);}
+  .team-rec-ats{font-family:'DM Mono',monospace;font-size:10px;color:var(--yellow);font-weight:500;}
 
   .footer{margin-top:4rem;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;}
 </style>
@@ -355,6 +360,26 @@ function renderInjuryCol(abbr, name, players) {
 }
 
 // ── Render game card ──────────────────────────────────────────
+// Build a quick lookup from eloRankings so game cards can show records
+let _rankingMap = {};
+function buildRankingMap(rankings) {
+  _rankingMap = {};
+  rankings.forEach(r => { _rankingMap[r.abbr] = r; });
+}
+function teamRecordHTML(abbr, isHome) {
+  const r = _rankingMap[abbr];
+  if (!r) return '';
+  const season  = r.record  || '—';
+  const ctxRec  = isHome ? (r.homeRec || r.homeW+'-'+r.homeL) : (r.roadRec || r.awayW+'-'+r.awayL);
+  const ctxLbl  = isHome ? 'home' : 'away';
+  const ats     = r.ats || '—';
+  return `<div class="team-record-row">
+    <span class="team-rec-badge">${season}</span>
+    <span class="team-rec-ctx">${ctxRec} ${ctxLbl}</span>
+    <span class="team-rec-ats">ATS ${ats}</span>
+  </div>`;
+}
+
 function renderGame(g, idx, awayInjuries, homeInjuries) {
   const hFav  = g.homeWinProb >= 50;
   const sp    = g.spread;
@@ -380,6 +405,7 @@ function renderGame(g, idx, awayInjuries, homeInjuries) {
       <div class="team-abbr" style="color:${!hFav?'var(--orange)':'var(--text-mid)'}">${g.away}</div>
       <div class="team-name-small">${g.awayName}</div>
       <div class="team-elo-tag">ELO ${g.awayElo}</div>
+      ${teamRecordHTML(g.away, false)}
       <div class="team-win-pct ${!hFav?'fav':'dog'}">${g.awayWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
     </div>
     <div class="vs-block">
@@ -392,6 +418,7 @@ function renderGame(g, idx, awayInjuries, homeInjuries) {
       <div class="team-abbr" style="color:${hFav?'var(--orange)':'var(--text-mid)'}">${g.home}</div>
       <div class="team-name-small">${g.homeName} <span style="font-size:10px;color:var(--text-dim)">[Home]</span></div>
       <div class="team-elo-tag">ELO ${g.homeElo}</div>
+      ${teamRecordHTML(g.home, true)}
       <div class="team-win-pct ${hFav?'fav':'dog'}">${g.homeWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
     </div>
   </div>
@@ -586,6 +613,9 @@ async function init() {
       ).join('');
     }
 
+    // Build ranking map first so game cards can show records
+    buildRankingMap(data.eloRankings);
+
     await renderDayGames(todayGames,    'today-games',    'today-subtitle',    todayLabel);
     await renderDayGames(tomorrowGames, 'tomorrow-games', 'tomorrow-subtitle', tmrLabel);
 
@@ -596,7 +626,7 @@ async function init() {
 
     // Team Stats tab
     document.getElementById('teamstats-subtitle').textContent =
-      '2026 Season · ' + data.eloRankings.length + ' teams · Pace, PPG, PAPG, records & ATS';
+      '2026 Season · ' + data.eloRankings.length + ' teams · PPG, PAPG, records & ATS';
     renderTeamStats(data.eloRankings);
 
   } catch(err) {
