@@ -268,8 +268,8 @@
       <span class="sort-label">Sort by:</span>
       <button class="sort-btn active" onclick="sortTeamStats('elo')">ELO</button>
       <button class="sort-btn" onclick="sortTeamStats('record')">Record</button>
-      <button class="sort-btn" onclick="sortTeamStats('pace')">Pace L5</button>
-      <button class="sort-btn" onclick="sortTeamStats('ats')">ATS L5</button>
+      <button class="sort-btn" onclick="sortTeamStats('pace')">PPG</button>
+      <button class="sort-btn" onclick="sortTeamStats('ats')">ATS</button>
       <button class="sort-btn conf-filter" onclick="filterConf('All')">All</button>
       <button class="sort-btn" onclick="filterConf('East')">East</button>
       <button class="sort-btn" onclick="filterConf('West')">West</button>
@@ -493,7 +493,7 @@ function renderRankings(rankings) {
     </div>
     <div class="table-wrap">
       <table class="elo-table">
-        <thead><tr><th>#</th><th></th><th>Team</th><th>Abbr</th><th>Conf</th><th>W-L</th><th>Win%</th><th>Full Game ELO</th><th>1H ELO</th><th class="new-col">Pace L5</th><th class="new-col">Home</th><th class="new-col">Away</th><th class="new-col">ATS L5</th></tr></thead>
+        <thead><tr><th>#</th><th></th><th>Team</th><th>Abbr</th><th>Conf</th><th>W-L</th><th>Win%</th><th>Full Game ELO</th><th>1H ELO</th><th class="new-col">PPG</th><th class="new-col">PAPG</th><th class="new-col">Home</th><th class="new-col">Away</th><th class="new-col">ATS</th></tr></thead>
         <tbody id="elo-tbody"></tbody>
       </table>
     </div>`;
@@ -524,10 +524,11 @@ function renderRankings(rankings) {
       <td style="font-size:13px;">${wpct}</td>
       <td><div class="elo-bar-wrap"><span class="elo-val ${ec}">${r.elo}</span><div class="elo-bar-bg"><div class="elo-bar-fill ${bc}" style="width:${bw}%"></div></div></div></td>
       <td><div class="elo-bar-wrap"><span class="elo-val ${h1ec}">${h1Elo}</span><div class="elo-bar-bg"><div class="elo-bar-fill ${h1bc}" style="width:${h1bw}%"></div></div></div></td>
-      <td><span class="pace-cell">${r.paceL5 != null ? r.paceL5 : '—'}</span></td>
+      <td><span class="pace-cell">${r.ppg != null ? r.ppg : '—'}</span></td>
+      <td><span class="pace-cell" style="color:#ef476f">${r.papg != null ? r.papg : '—'}</span></td>
       <td><span class="split-rec">${r.homeW != null ? r.homeW+'-'+r.homeL : '—'}</span></td>
       <td><span class="split-rec">${r.awayW != null ? r.awayW+'-'+r.awayL : '—'}</span></td>
-      <td><span class="${atsClass(r.atsL5)}">${r.atsL5 || '—'}</span></td>
+      <td><span class="${atsClass(r.ats)}">${r.ats || '—'}</span></td>
     </tr>`;
   });
 
@@ -601,7 +602,7 @@ async function init() {
 
     // Team Stats tab
     document.getElementById('teamstats-subtitle').textContent =
-      '2026 Season · ' + data.eloRankings.length + ' teams · Pace, records & ATS L5';
+      '2026 Season · ' + data.eloRankings.length + ' teams · Pace, PPG, PAPG, records & ATS';
     renderTeamStats(data.eloRankings);
 
   } catch(err) {
@@ -666,10 +667,10 @@ function applyTeamStatsView() {
   data.sort((a, b) => {
     if (_tsSort === 'elo')    return b.elo - a.elo;
     if (_tsSort === 'record') return (b.winPct || 0) - (a.winPct || 0);
-    if (_tsSort === 'pace')   return (b.paceL5 || 0) - (a.paceL5 || 0);
+    if (_tsSort === 'pace')   return (b.ppg || 0) - (a.ppg || 0);
     if (_tsSort === 'ats') {
-      const ac = (a.atsL5 || '0-0').split('-').map(Number);
-      const bc = (b.atsL5 || '0-0').split('-').map(Number);
+      const ac = (a.ats || '0-0').split('-').map(Number);
+      const bc = (b.ats || '0-0').split('-').map(Number);
       const aDiff = (ac[0]||0) - (ac[1]||0);
       const bDiff = (bc[0]||0) - (bc[1]||0);
       return bDiff - aDiff;
@@ -677,8 +678,8 @@ function applyTeamStatsView() {
     return 0;
   });
 
-  const minPace = Math.min(...data.filter(r => r.paceL5).map(r => r.paceL5));
-  const maxPace = Math.max(...data.filter(r => r.paceL5).map(r => r.paceL5));
+  const minPace = Math.min(...data.filter(r => r.ppg).map(r => r.ppg));
+  const maxPace = Math.max(...data.filter(r => r.ppg).map(r => r.ppg));
 
   document.getElementById('teamstats-grid').innerHTML = data.map((r, i) => renderTeamCard(r, i, minPace, maxPace)).join('');
 }
@@ -693,7 +694,8 @@ function renderTeamCard(r, i, minPace, maxPace) {
   const al   = r.awayL != null ? r.awayL : '?';
   const hPct = (hw + hl) > 0 ? ((hw / (hw + hl)) * 100).toFixed(0) + '%' : '—';
   const aPct = (aw + al) > 0 ? ((aw / (aw + al)) * 100).toFixed(0) + '%' : '—';
-  const pace = r.paceL5 != null ? r.paceL5 : null;
+  const pace = r.ppg != null ? r.ppg : null;
+  const papg = r.papg != null ? r.papg : null;
   const pacePct = pace != null && maxPace > minPace ? Math.round(((pace - minPace) / (maxPace - minPace)) * 100) : 50;
   const paceLabel = pace != null ? pace.toFixed(1) : '—';
 
@@ -706,7 +708,7 @@ function renderTeamCard(r, i, minPace, maxPace) {
   }
 
   // ATS
-  const ats = r.atsL5 || '—';
+  const ats = r.ats || '—';
   let atsParts = [0,0,0];
   let atsTotal = 0;
   let atsLabel = '—';
@@ -759,15 +761,15 @@ function renderTeamCard(r, i, minPace, maxPace) {
 
     <div class="pace-ats-row">
       <div class="pace-block">
-        <div class="pace-label">Pace L5 · pts/gm</div>
+        <div class="pace-label">Points Per Game</div>
         <div class="pace-val">${paceLabel}</div>
-        <div class="pace-sub">${paceTier} · combined pts last 5</div>
+        <div class="pace-sub">${paceTier} · season avg · PAPG: ${papg != null ? papg : '\u2014'}</div>
         <div class="pace-bar-bg"><div class="pace-bar-fill" style="width:${pacePct}%"></div></div>
       </div>
       <div class="ats-block">
-        <div class="ats-label">ATS Last 5</div>
+        <div class="ats-label">ATS (Season)</div>
         <div class="ats-val ats-${atsCls}">${atsLabel}</div>
-        <div class="ats-sub">Covers · Losses · Pushes</div>
+        <div class="ats-sub">Against the spread · season</div>
         <div class="ats-mini-bar">
           <div class="ats-seg-c" style="flex:${cW}"></div>
           <div class="ats-seg-l" style="flex:${lW}"></div>
