@@ -216,10 +216,8 @@
   .ats-cell-neu{color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;}
   .split-rec{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-mid);}
 
-  .team-record-row{display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:6px;}
-  .team-rec-badge{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--text);}
-  .team-rec-ctx{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);}
-  .team-rec-ats{font-family:'DM Mono',monospace;font-size:10px;color:var(--yellow);font-weight:500;}
+  .team-rec-line{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-mid);margin-top:5px;line-height:1.4;}
+  .team-rec-ats{font-family:'DM Mono',monospace;font-size:11px;color:var(--yellow);font-weight:500;}
 
   .footer{margin-top:4rem;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;}
 </style>
@@ -369,15 +367,12 @@ function buildRankingMap(rankings) {
 function teamRecordHTML(abbr, isHome) {
   const r = _rankingMap[abbr];
   if (!r) return '';
-  const season  = r.record  || '—';
-  const ctxRec  = isHome ? (r.homeRec || r.homeW+'-'+r.homeL) : (r.roadRec || r.awayW+'-'+r.awayL);
-  const ctxLbl  = isHome ? 'home' : 'away';
-  const ats     = r.ats || '—';
-  return `<div class="team-record-row">
-    <span class="team-rec-badge">${season}</span>
-    <span class="team-rec-ctx">${ctxRec} ${ctxLbl}</span>
-    <span class="team-rec-ats">ATS ${ats}</span>
-  </div>`;
+  const season = r.record  || '—';
+  const ctxRec = isHome ? (r.homeRec || (r.homeW+'-'+r.homeL)) : (r.roadRec || (r.awayW+'-'+r.awayL));
+  const ctxLbl = isHome ? 'home' : 'away';
+  const ats    = r.ats || '—';
+  return `<div class="team-rec-line">${season} &nbsp;/&nbsp; ${ctxRec} ${ctxLbl}</div>
+<div class="team-rec-ats">ATS ${ats}</div>`;
 }
 
 function renderGame(g, idx, awayInjuries, homeInjuries) {
