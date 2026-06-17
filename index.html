@@ -378,11 +378,12 @@ function teamRecordHTML(abbr, isHome) {
 function renderGame(g, idx, awayInjuries, homeInjuries) {
   const hFav  = g.homeWinProb >= 50;
   const sp    = g.spread;
-  const hSpr  = sp > 0 ? `-${sp}` : `+${Math.abs(sp)}`;
-  const aSpr  = sp > 0 ? `+${sp}` : `-${Math.abs(sp)}`;
+  const hSpr  = hFav ? `-${sp}` : `+${sp}`;
+  const aSpr  = hFav ? `+${sp}` : `-${sp}`;
   const s1H   = g.spread1H;
-  const h1SprH = s1H < 0 ? `+${Math.abs(s1H)}` : `-${s1H}`;
-  const h1SprA = s1H > 0 ? `+${s1H}` : `${s1H}`;
+  const h1Fav = g.homeWinProb1H >= 50;
+  const h1SprH = h1Fav ? `-${s1H}` : `+${s1H}`;
+  const h1SprA = h1Fav ? `+${s1H}` : `-${s1H}`;
 
   const awayCol = renderInjuryCol(g.away, g.awayName, awayInjuries);
   const homeCol = renderInjuryCol(g.home, g.homeName, homeInjuries);
