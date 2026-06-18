@@ -229,7 +229,10 @@
     <div class="logo-ball">🏀</div>
     WNBA <span>PREDICTION</span> MODEL
   </div>
-  <div class="header-meta" id="last-updated">Loading...</div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span id="injury-refresh-badge" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);"></span>
+    <div class="header-meta" id="last-updated">Loading...</div>
+  </div>
 </header>
 
 <nav class="tab-bar">
@@ -569,6 +572,9 @@ function showError(id, msg) {
   document.getElementById(id).innerHTML = `<div class="error-wrap"><div class="error-box"><div class="error-title">Unable to load data</div><div class="error-msg">${msg}</div><button class="retry-btn" onclick="init()">↻ Retry</button></div></div>`;
 }
 
+// ── Stored games for injury refresh ──────────────────────────
+let _todayGames = [], _tomorrowGames = [];
+
 // ── Main init ─────────────────────────────────────────────────
 async function init() {
   ['today-games','tomorrow-games'].forEach(id=>{
@@ -585,25 +591,23 @@ async function init() {
       'Updated: '+ts.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+
       ' '+ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
 
-    const todayGames    = data.games.filter(g=>g.label==='Today');
-    const tomorrowGames = data.games.filter(g=>g.label==='Tomorrow');
+    _todayGames    = data.games.filter(g=>g.label==='Today');
+    _tomorrowGames = data.games.filter(g=>g.label==='Tomorrow');
 
-    // Use browser's actual current date for labels — NOT the JSON timestamp
-    // (JSON timestamp reflects when Apps Script ran, which may be yesterday)
+    // Use browser's actual current date for labels
     const now      = new Date();
     const todayLabel = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
     const tmrDate  = new Date(now); tmrDate.setDate(tmrDate.getDate()+1);
     const tmrLabel = tmrDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
-// ── Render a day's games using injuries from JSON ─────────────
-    async function renderDayGames(games, containerID, subtitleID, dateLabel) {
+    // ── Render games using injuries embedded in JSON ──────────
+    function renderDayGames(games, containerID, subtitleID, dateLabel) {
       if (games.length === 0) {
         document.getElementById(subtitleID).textContent = dateLabel + ' · No games scheduled';
         document.getElementById(containerID).innerHTML = '<div class="loading-wrap"><div class="loading-text">No games scheduled.</div></div>';
         return;
       }
       document.getElementById(subtitleID).textContent = dateLabel + ' · ' + games.length + ' game' + (games.length!==1?'s':'');
-      // Injuries are already bundled in the JSON from Apps Script
       document.getElementById(containerID).innerHTML = games.map((g,i) =>
         renderGame(g, i, g.awayInjuries || [], g.homeInjuries || [])
       ).join('');
@@ -612,8 +616,8 @@ async function init() {
     // Build ranking map first so game cards can show records
     buildRankingMap(data.eloRankings);
 
-    await renderDayGames(todayGames,    'today-games',    'today-subtitle',    todayLabel);
-    await renderDayGames(tomorrowGames, 'tomorrow-games', 'tomorrow-subtitle', tmrLabel);
+    renderDayGames(_todayGames,    'today-games',    'today-subtitle',    todayLabel);
+    renderDayGames(_tomorrowGames, 'tomorrow-games', 'tomorrow-subtitle', tmrLabel);
 
     // Rankings
     document.getElementById('rankings-subtitle').textContent =
@@ -625,6 +629,9 @@ async function init() {
       '2026 Season · ' + data.eloRankings.length + ' teams · PPG, PAPG, records & ATS';
     renderTeamStats(data.eloRankings);
 
+    // ── Stage 2: fetch live injuries and patch the game cards ──
+    refreshInjuries();
+
   } catch(err) {
     const msg = err.message||'Unknown error';
     showError('today-games', msg);
@@ -632,6 +639,56 @@ async function init() {
     showError('rankings-content', msg);
     showError('teamstats-grid', msg);
     document.getElementById('last-updated').textContent = 'Failed to load';
+  }
+}
+
+// ── Live injury refresh ───────────────────────────────────────
+// Calls the ?mode=injuries endpoint and patches injury sections
+// without re-rendering the whole game card (preserves ELO/scores)
+async function refreshInjuries() {
+  // Show a subtle refreshing indicator
+  const badge = document.getElementById('injury-refresh-badge');
+  if (badge) badge.textContent = '⟳ Refreshing injuries...';
+
+  try {
+    const injData = await fetchJSONP(WEBAPP_URL + '&mode=injuries');
+    const injuries = injData.injuries || {};
+    const ts = new Date(injData.generated);
+    const timeStr = ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+
+    // Patch every injury section currently in the DOM
+    const allGames = [..._todayGames, ..._tomorrowGames];
+    allGames.forEach(g => {
+      const awayInj = injuries[g.away] || [];
+      const homeInj = injuries[g.home] || [];
+      // Find the injury grid for this game by searching for team abbr in nearby header
+      // Each .injury-section is inside a .game-card; we match by game index
+    });
+
+    // Re-render just the injury sections inside each game card
+    document.querySelectorAll('.game-card').forEach((card, idx) => {
+      const g = [..._todayGames, ..._tomorrowGames][idx];
+      if (!g) return;
+      const awayInj = injuries[g.away] || [];
+      const homeInj = injuries[g.home] || [];
+      const injSection = card.querySelector('.injury-section');
+      if (!injSection) return;
+      injSection.innerHTML = `
+        <div class="injury-header">
+          <div class="injury-dot"></div>
+          Injury Report
+          <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim)">Live · ${timeStr}</span>
+        </div>
+        <div class="injury-grid">
+          ${renderInjuryCol(g.away, g.awayName, awayInj)}
+          ${renderInjuryCol(g.home, g.homeName, homeInj)}
+        </div>`;
+    });
+
+    if (badge) badge.textContent = 'Injuries live · ' + timeStr;
+  } catch(e) {
+    if (badge) badge.textContent = '';
+    console.warn('Injury refresh failed:', e);
   }
 }
 
