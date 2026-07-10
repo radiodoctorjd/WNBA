@@ -346,6 +346,10 @@ function renderInjuryCol(abbr, name, players) {
       <div class="no-injuries">No reported injuries</div>
     </div>`;
   }
+  const outCount = players.filter(p => statusClass(p.status) === 'status-Out').length;
+  const severityBadge = outCount > 0
+    ? `<span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;background:rgba(239,71,111,.15);color:#ff8fa3;margin-left:6px;">${outCount} Out</span>`
+    : '';
   const rows = players.map(p => `
     <div class="injury-player">
       <span class="injury-status ${statusClass(p.status)}">${p.status}</span>
@@ -355,7 +359,7 @@ function renderInjuryCol(abbr, name, players) {
       </div>
     </div>`).join('');
   return `<div class="injury-team-col">
-    <div class="injury-team-label">${name}</div>
+    <div class="injury-team-label">${name}${severityBadge}</div>
     ${rows}
   </div>`;
 }
@@ -376,6 +380,24 @@ function teamRecordHTML(abbr, isHome) {
   const ats    = r.ats || '—';
   return `<div class="team-rec-line">${season} &nbsp;/&nbsp; ${ctxRec} ${ctxLbl}</div>
 <div class="team-rec-ats">ATS ${ats}</div>`;
+}
+
+// ── Compact streak / B2B tag for game cards ────────────────────
+// Shows current streak (e.g. "W3") colored by hot/cold, plus a
+// back-to-back badge when the team has zero days of rest.
+function streakTagHTML(streak, restDays, isB2B) {
+  if (!streak && restDays == null) return '';
+  let streakEl = '';
+  if (streak) {
+    const isHot = streak[0] === 'W';
+    const color = isHot ? 'var(--teal)' : 'var(--red)';
+    streakEl = `<span style="font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:${color}">${streak}</span>`;
+  }
+  const b2bEl = isB2B
+    ? `<span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;padding:1px 6px;border-radius:3px;background:rgba(255,107,53,.15);color:var(--orange);margin-left:6px;">B2B</span>`
+    : '';
+  if (!streakEl && !b2bEl) return '';
+  return `<div style="margin-top:3px;display:flex;align-items:center;gap:2px;">${streakEl}${b2bEl}</div>`;
 }
 
 function renderGame(g, idx, awayInjuries, homeInjuries) {
@@ -405,6 +427,7 @@ function renderGame(g, idx, awayInjuries, homeInjuries) {
       <div class="team-name-small">${g.awayName}</div>
       <div class="team-elo-tag">ELO ${g.awayElo}</div>
       ${teamRecordHTML(g.away, false)}
+      ${streakTagHTML(g.awayStreak, g.awayRestDays, g.awayB2B)}
       <div class="team-win-pct ${!hFav?'fav':'dog'}">${g.awayWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
     </div>
     <div class="vs-block">
@@ -418,6 +441,7 @@ function renderGame(g, idx, awayInjuries, homeInjuries) {
       <div class="team-name-small">${g.homeName} <span style="font-size:10px;color:var(--text-dim)">[Home]</span></div>
       <div class="team-elo-tag">ELO ${g.homeElo}</div>
       ${teamRecordHTML(g.home, true)}
+      ${streakTagHTML(g.homeStreak, g.homeRestDays, g.homeB2B)}
       <div class="team-win-pct ${hFav?'fav':'dog'}">${g.homeWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
     </div>
   </div>
@@ -785,6 +809,11 @@ function renderTeamCard(r, i) {
 
   const logo = TEAM_LOGOS[r.abbr] ? `<img class="tsc-logo" src="${TEAM_LOGOS[r.abbr]}" alt="${r.abbr}" onerror="this.style.display='none'">` : '';
 
+  // Form (last 5) & streak
+  const formLabel = r.form || '—';
+  const streakLabel = r.streak || '—';
+  const streakColor = r.streak && r.streak[0] === 'W' ? 'var(--teal)' : r.streak && r.streak[0] === 'L' ? 'var(--red)' : 'var(--text-mid)';
+
   return `
 <div class="team-stat-card animate-in" style="animation-delay:${i * 0.04}s" data-conf="${r.conf}">
   <div class="tsc-header">
@@ -815,6 +844,19 @@ function renderTeamCard(r, i) {
         <div class="rec-label">Away</div>
         <div class="rec-val rec-away">${aw}-${al}</div>
         <div class="rec-pct">${aPct} on road</div>
+      </div>
+    </div>
+
+    <div class="rec-row">
+      <div class="rec-block">
+        <div class="rec-label">Last 5</div>
+        <div class="rec-val rec-season">${formLabel}</div>
+        <div class="rec-pct">recent form</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Streak</div>
+        <div class="rec-val" style="color:${streakColor}">${streakLabel}</div>
+        <div class="rec-pct">current run</div>
       </div>
     </div>
 
