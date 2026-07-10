@@ -383,18 +383,16 @@ function teamRecordHTML(abbr, isHome) {
 }
 
 // ── Compact streak / B2B tag for game cards ────────────────────
-// Shows current streak (e.g. "W3") colored by hot/cold, plus a
-// back-to-back badge when the team has zero days of rest.
-// isFallback: true means this was derived from a partial/stale
-// sample rather than live ESPN data — suppressed rather than shown
-// with false confidence.
+// Shows current streak (e.g. "W3"). Live ESPN-derived streaks are
+// colored hot/cold; streaks derived from the Elo engine's own game
+// log (isFallback:true) are shown in neutral gray since that sample
+// can lag behind the team's true current record — shown, not hidden,
+// but visually flagged as lower-confidence.
 function streakTagHTML(streak, restDays, isB2B, isFallback) {
-  if (isFallback) streak = null;
   if (!streak && restDays == null) return '';
   let streakEl = '';
   if (streak) {
-    const isHot = streak[0] === 'W';
-    const color = isHot ? 'var(--teal)' : 'var(--red)';
+    const color = isFallback ? 'var(--text-dim)' : (streak[0] === 'W' ? 'var(--teal)' : 'var(--red)');
     streakEl = `<span style="font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:${color}">${streak}</span>`;
   }
   const b2bEl = isB2B
@@ -813,12 +811,15 @@ function renderTeamCard(r, i) {
 
   const logo = TEAM_LOGOS[r.abbr] ? `<img class="tsc-logo" src="${TEAM_LOGOS[r.abbr]}" alt="${r.abbr}" onerror="this.style.display='none'">` : '';
 
-  // Form (last 5) & streak — suppress if derived from a stale fallback
-  // sample rather than live ESPN data, rather than showing a
-  // confident-looking but potentially wrong number.
-  const formLabel = (!r.formIsFallback && r.form) ? r.form : '—';
-  const streakLabel = (!r.formIsFallback && r.streak) ? r.streak : '—';
+  // Form (last 5) & streak — always show real data, but label its
+  // source honestly: live ESPN data when available for this team,
+  // otherwise derived from the Elo engine's own game log (a rolling
+  // sample, so it can lag behind the team's true current record).
+  const formLabel = r.form || '—';
+  const streakLabel = r.streak || '—';
   const streakColor = streakLabel[0] === 'W' ? 'var(--teal)' : streakLabel[0] === 'L' ? 'var(--red)' : 'var(--text-mid)';
+  const formSourceNote = r.formIsFallback ? 'from Elo log' : 'recent form';
+  const streakSourceNote = r.formIsFallback ? 'from Elo log' : 'current run';
 
   return `
 <div class="team-stat-card animate-in" style="animation-delay:${i * 0.04}s" data-conf="${r.conf}">
@@ -857,12 +858,12 @@ function renderTeamCard(r, i) {
       <div class="rec-block">
         <div class="rec-label">Last 5</div>
         <div class="rec-val rec-season">${formLabel}</div>
-        <div class="rec-pct">recent form</div>
+        <div class="rec-pct">${formSourceNote}</div>
       </div>
       <div class="rec-block">
         <div class="rec-label">Streak</div>
         <div class="rec-val" style="color:${streakColor}">${streakLabel}</div>
-        <div class="rec-pct">current run</div>
+        <div class="rec-pct">${streakSourceNote}</div>
       </div>
     </div>
 
