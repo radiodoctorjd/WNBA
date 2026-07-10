@@ -385,7 +385,11 @@ function teamRecordHTML(abbr, isHome) {
 // ── Compact streak / B2B tag for game cards ────────────────────
 // Shows current streak (e.g. "W3") colored by hot/cold, plus a
 // back-to-back badge when the team has zero days of rest.
-function streakTagHTML(streak, restDays, isB2B) {
+// isFallback: true means this was derived from a partial/stale
+// sample rather than live ESPN data — suppressed rather than shown
+// with false confidence.
+function streakTagHTML(streak, restDays, isB2B, isFallback) {
+  if (isFallback) streak = null;
   if (!streak && restDays == null) return '';
   let streakEl = '';
   if (streak) {
@@ -427,7 +431,7 @@ function renderGame(g, idx, awayInjuries, homeInjuries) {
       <div class="team-name-small">${g.awayName}</div>
       <div class="team-elo-tag">ELO ${g.awayElo}</div>
       ${teamRecordHTML(g.away, false)}
-      ${streakTagHTML(g.awayStreak, g.awayRestDays, g.awayB2B)}
+      ${streakTagHTML(g.awayStreak, g.awayRestDays, g.awayB2B, g.awayFormIsFallback)}
       <div class="team-win-pct ${!hFav?'fav':'dog'}">${g.awayWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
     </div>
     <div class="vs-block">
@@ -441,7 +445,7 @@ function renderGame(g, idx, awayInjuries, homeInjuries) {
       <div class="team-name-small">${g.homeName} <span style="font-size:10px;color:var(--text-dim)">[Home]</span></div>
       <div class="team-elo-tag">ELO ${g.homeElo}</div>
       ${teamRecordHTML(g.home, true)}
-      ${streakTagHTML(g.homeStreak, g.homeRestDays, g.homeB2B)}
+      ${streakTagHTML(g.homeStreak, g.homeRestDays, g.homeB2B, g.homeFormIsFallback)}
       <div class="team-win-pct ${hFav?'fav':'dog'}">${g.homeWinProb}% <span style="font-size:11px;font-weight:400;color:var(--text-dim)">win prob</span></div>
     </div>
   </div>
@@ -809,10 +813,12 @@ function renderTeamCard(r, i) {
 
   const logo = TEAM_LOGOS[r.abbr] ? `<img class="tsc-logo" src="${TEAM_LOGOS[r.abbr]}" alt="${r.abbr}" onerror="this.style.display='none'">` : '';
 
-  // Form (last 5) & streak
-  const formLabel = r.form || '—';
-  const streakLabel = r.streak || '—';
-  const streakColor = r.streak && r.streak[0] === 'W' ? 'var(--teal)' : r.streak && r.streak[0] === 'L' ? 'var(--red)' : 'var(--text-mid)';
+  // Form (last 5) & streak — suppress if derived from a stale fallback
+  // sample rather than live ESPN data, rather than showing a
+  // confident-looking but potentially wrong number.
+  const formLabel = (!r.formIsFallback && r.form) ? r.form : '—';
+  const streakLabel = (!r.formIsFallback && r.streak) ? r.streak : '—';
+  const streakColor = streakLabel[0] === 'W' ? 'var(--teal)' : streakLabel[0] === 'L' ? 'var(--red)' : 'var(--text-mid)';
 
   return `
 <div class="team-stat-card animate-in" style="animation-delay:${i * 0.04}s" data-conf="${r.conf}">
