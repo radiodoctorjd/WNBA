@@ -811,7 +811,7 @@ function renderTeamCard(r, i) {
 
   const logo = TEAM_LOGOS[r.abbr] ? `<img class="tsc-logo" src="${TEAM_LOGOS[r.abbr]}" alt="${r.abbr}" onerror="this.style.display='none'">` : '';
 
-  // Form (last 5) & streak — always show real data, but label its
+  // Form (last 10) & streak — always show real data, but label its
   // source honestly: live ESPN data when available for this team,
   // otherwise derived from the Elo engine's own game log (a rolling
   // sample, so it can lag behind the team's true current record).
@@ -820,6 +820,14 @@ function renderTeamCard(r, i) {
   const streakColor = streakLabel[0] === 'W' ? 'var(--teal)' : streakLabel[0] === 'L' ? 'var(--red)' : 'var(--text-mid)';
   const formSourceNote = r.formIsFallback ? 'from Elo log' : 'recent form';
   const streakSourceNote = r.formIsFallback ? 'from Elo log' : 'current run';
+
+  // Advanced stats (Pace, ORtg, DRtg) — sourced from Basketball-Reference,
+  // which is the only place that publishes real possession-based ratings
+  // for the WNBA. Shown as em-dash when not yet available rather than
+  // guessed or calculated locally.
+  const paceAdvLabel = r.pace != null ? r.pace : '—';
+  const ortgLabel = r.ortg != null ? r.ortg : '—';
+  const drtgLabel = r.drtg != null ? r.drtg : '—';
 
   return `
 <div class="team-stat-card animate-in" style="animation-delay:${i * 0.04}s" data-conf="${r.conf}">
@@ -856,7 +864,7 @@ function renderTeamCard(r, i) {
 
     <div class="rec-row">
       <div class="rec-block">
-        <div class="rec-label">Last 5</div>
+        <div class="rec-label">Last 10</div>
         <div class="rec-val rec-season">${formLabel}</div>
         <div class="rec-pct">${formSourceNote}</div>
       </div>
@@ -882,6 +890,24 @@ function renderTeamCard(r, i) {
         <div class="ats-label">ATS (Season)</div>
         <div class="ats-val ats-${atsCls}">${atsLabel}</div>
         <div class="ats-sub">Against the spread</div>
+      </div>
+    </div>
+
+    <div class="pace-ats-row">
+      <div class="pace-block">
+        <div class="pace-label">Pace</div>
+        <div class="pace-val">${paceAdvLabel}</div>
+        <div class="pace-sub">Possessions per 40 min</div>
+      </div>
+      <div class="pace-block">
+        <div class="pace-label">ORtg</div>
+        <div class="pace-val" style="color:var(--teal)">${ortgLabel}</div>
+        <div class="pace-sub">Pts per 100 poss · offense</div>
+      </div>
+      <div class="pace-block">
+        <div class="pace-label">DRtg</div>
+        <div class="pace-val" style="color:#ef476f">${drtgLabel}</div>
+        <div class="pace-sub">Pts per 100 poss · defense</div>
       </div>
     </div>
 
