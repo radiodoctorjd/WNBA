@@ -829,6 +829,10 @@ function renderTeamCard(r, i) {
   const plusMinusVal = r.plusMinus;
   const plusMinusLabel = plusMinusVal != null ? (plusMinusVal > 0 ? '+' + plusMinusVal : String(plusMinusVal)) : '—';
   const plusMinusColor = plusMinusVal == null ? 'var(--text-mid)' : plusMinusVal > 0 ? 'var(--teal)' : plusMinusVal < 0 ? '#ef476f' : 'var(--text-mid)';
+  const fgaLabel = r.fga != null ? r.fga : '—';
+  const tovLabel = r.tov != null ? r.tov : '—';
+  const ftaLabel = r.fta != null ? r.fta : '—';
+  const orbLabel = r.orb != null ? r.orb : '—';
 
   return `
 <div class="team-stat-card animate-in" style="animation-delay:${i * 0.04}s" data-conf="${r.conf}">
@@ -904,6 +908,29 @@ function renderTeamCard(r, i) {
         <div class="pace-label">+/-</div>
         <div class="pace-val" style="color:${plusMinusColor}">${plusMinusLabel}</div>
         <div class="pace-sub">Season point differential</div>
+      </div>
+    </div>
+
+    <div class="pace-ats-row" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+      <div class="pace-block">
+        <div class="pace-label">FGA</div>
+        <div class="pace-val" style="font-size:16px;">${fgaLabel}</div>
+        <div class="pace-sub">FG attempts/gm</div>
+      </div>
+      <div class="pace-block">
+        <div class="pace-label">TOV</div>
+        <div class="pace-val" style="font-size:16px;">${tovLabel}</div>
+        <div class="pace-sub">Turnovers/gm</div>
+      </div>
+      <div class="pace-block">
+        <div class="pace-label">FTA</div>
+        <div class="pace-val" style="font-size:16px;">${ftaLabel}</div>
+        <div class="pace-sub">FT attempts/gm</div>
+      </div>
+      <div class="pace-block">
+        <div class="pace-label">ORB</div>
+        <div class="pace-val" style="font-size:16px;">${orbLabel}</div>
+        <div class="pace-sub">Off. rebounds/gm</div>
       </div>
     </div>
 
