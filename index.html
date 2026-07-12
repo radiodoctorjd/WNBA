@@ -821,13 +821,14 @@ function renderTeamCard(r, i) {
   const formSourceNote = r.formIsFallback ? 'from Elo log' : 'recent form';
   const streakSourceNote = r.formIsFallback ? 'from Elo log' : 'current run';
 
-  // Advanced stats (Pace, ORtg, DRtg) — sourced from Basketball-Reference,
-  // which is the only place that publishes real possession-based ratings
-  // for the WNBA. Shown as em-dash when not yet available rather than
-  // guessed or calculated locally.
+  // Advanced stats — Pace is estimated from real ESPN per-game box-score
+  // inputs (FGA, ORB, TOV, FTA) using the standard possessions formula,
+  // since Basketball-Reference isn't reachable from the backend for this
+  // project. +/- is simply season PPG minus points allowed per game.
   const paceAdvLabel = r.pace != null ? r.pace : '—';
-  const ortgLabel = r.ortg != null ? r.ortg : '—';
-  const drtgLabel = r.drtg != null ? r.drtg : '—';
+  const plusMinusVal = r.plusMinus;
+  const plusMinusLabel = plusMinusVal != null ? (plusMinusVal > 0 ? '+' + plusMinusVal : String(plusMinusVal)) : '—';
+  const plusMinusColor = plusMinusVal == null ? 'var(--text-mid)' : plusMinusVal > 0 ? 'var(--teal)' : plusMinusVal < 0 ? '#ef476f' : 'var(--text-mid)';
 
   return `
 <div class="team-stat-card animate-in" style="animation-delay:${i * 0.04}s" data-conf="${r.conf}">
@@ -893,21 +894,16 @@ function renderTeamCard(r, i) {
       </div>
     </div>
 
-    <div class="pace-ats-row">
+    <div class="pace-ats-row" style="grid-template-columns:1fr 1fr;">
       <div class="pace-block">
         <div class="pace-label">Pace</div>
         <div class="pace-val">${paceAdvLabel}</div>
-        <div class="pace-sub">Possessions per 40 min</div>
+        <div class="pace-sub">Est. possessions per game</div>
       </div>
       <div class="pace-block">
-        <div class="pace-label">ORtg</div>
-        <div class="pace-val" style="color:var(--teal)">${ortgLabel}</div>
-        <div class="pace-sub">Pts per 100 poss · offense</div>
-      </div>
-      <div class="pace-block">
-        <div class="pace-label">DRtg</div>
-        <div class="pace-val" style="color:#ef476f">${drtgLabel}</div>
-        <div class="pace-sub">Pts per 100 poss · defense</div>
+        <div class="pace-label">+/-</div>
+        <div class="pace-val" style="color:${plusMinusColor}">${plusMinusLabel}</div>
+        <div class="pace-sub">Season point differential</div>
       </div>
     </div>
 
