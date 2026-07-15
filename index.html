@@ -339,10 +339,18 @@ function statusClass(s) {
 }
 
 // ── Render injury column ──────────────────────────────────────
-function renderInjuryCol(abbr, name, players) {
+// eloDelta: negative number of ELO points already deducted for this
+// team's injuries (e.g. -50.4), or 0/undefined if no penalty applied.
+// This reflects what the displayed predictions actually used — it is
+// NOT recomputed during the live injury refresh, since scores/spread
+// on the card are fixed at initial load.
+function renderInjuryCol(abbr, name, players, eloDelta) {
+  const eloTag = (eloDelta && eloDelta !== 0)
+    ? `<span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;background:rgba(239,71,111,.15);color:#ff8fa3;margin-left:6px;" title="ELO points deducted for injuries">${eloDelta} ELO</span>`
+    : '';
   if (!players || players.length === 0) {
     return `<div class="injury-team-col">
-      <div class="injury-team-label">${name}</div>
+      <div class="injury-team-label">${name}${eloTag}</div>
       <div class="no-injuries">No reported injuries</div>
     </div>`;
   }
@@ -359,7 +367,7 @@ function renderInjuryCol(abbr, name, players) {
       </div>
     </div>`).join('');
   return `<div class="injury-team-col">
-    <div class="injury-team-label">${name}${severityBadge}</div>
+    <div class="injury-team-label">${name}${severityBadge}${eloTag}</div>
     ${rows}
   </div>`;
 }
@@ -412,8 +420,8 @@ function renderGame(g, idx, awayInjuries, homeInjuries) {
   const h1SprH = h1Fav ? `-${s1H}` : `+${s1H}`;
   const h1SprA = h1Fav ? `+${s1H}` : `-${s1H}`;
 
-  const awayCol = renderInjuryCol(g.away, g.awayName, awayInjuries);
-  const homeCol = renderInjuryCol(g.home, g.homeName, homeInjuries);
+  const awayCol = renderInjuryCol(g.away, g.awayName, awayInjuries, g.awayInjuryElo);
+  const homeCol = renderInjuryCol(g.home, g.homeName, homeInjuries, g.homeInjuryElo);
 
   return `
 <div class="game-card animate-in" style="animation-delay:${idx*.08}s">
@@ -706,8 +714,8 @@ async function refreshInjuries() {
           <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim)">Live · ${timeStr}</span>
         </div>
         <div class="injury-grid">
-          ${renderInjuryCol(g.away, g.awayName, awayInj)}
-          ${renderInjuryCol(g.home, g.homeName, homeInj)}
+          ${renderInjuryCol(g.away, g.awayName, awayInj, g.awayInjuryElo)}
+          ${renderInjuryCol(g.home, g.homeName, homeInj, g.homeInjuryElo)}
         </div>`;
     });
 
